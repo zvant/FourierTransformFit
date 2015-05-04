@@ -1,5 +1,6 @@
 package fourier.fitting;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class FourierTransform
@@ -7,7 +8,7 @@ public class FourierTransform
 	private static int MAX = 11;
 	private double[] coefficients = new double[MAX];
 	private int up_limit;
-	ArrayList<Point> sample_points;
+	ArrayList<Point2D> sample_points;
 	
 	public FourierTransform()
 	{
@@ -16,7 +17,7 @@ public class FourierTransform
 			coefficients[i] = 0.0;
 	}
 	
-	public boolean setPoints(ArrayList<Point> sample)
+	public boolean setPoints(ArrayList sample)
 	{
 		if(sample != null)
 		{
@@ -25,7 +26,7 @@ public class FourierTransform
 		}
 		else
 		{
-			sample_points = new ArrayList<Point>();
+			sample_points = new ArrayList<Point2D>();
 			return false;
 		}
 	}
