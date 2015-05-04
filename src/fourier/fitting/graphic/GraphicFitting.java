@@ -99,6 +99,13 @@ public class GraphicFitting {
         for (int i = 0; i < max_n; i++) {
             n_comboBox.addItem(i);
         }
+        n_comboBox.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+            
+        });
         set_panel.add(n_comboBox);
         if_show_coordinate = new JCheckBox("show coordinate");
         if_show_coordinate.addActionListener(new ActionListener() {
@@ -236,8 +243,8 @@ public class GraphicFitting {
             this.addMouseListener(new MouseClickHandler());
             this.addMouseMotionListener(new MouseCursorHandler());
         }
-        
-        public void update(Graphics g){
+
+        public void update(Graphics g) {
             paintComponent(g);
         }
 
@@ -323,10 +330,25 @@ public class GraphicFitting {
 
         public void mousePressed(MouseEvent e) {
             System.out.println("clicked at " + e.getPoint());
-            sample_points.add(new fourier.fitting.Point(
-                    e.getPoint().getX() * 2 / canvas.width - 1,
-                    e.getPoint().getY() * 2 / canvas.width - 1)
-            );
+            boolean is_remove = false;
+            int x, y;
+            for (fourier.fitting.Point p : sample_points) {
+                x = (int) ((p.getX() + 1) * canvas.width / 2);
+                y = (int) ((p.getY() + 1) * canvas.width / 2);
+                if (Math.abs(e.getPoint().getX() - x) + Math.abs(e.getPoint().getY() - y) <= 4) {
+
+                    is_remove = true;
+                    sample_points.remove(p);
+                    break;
+                }
+            }
+            if (!is_remove) {
+                sample_points.add(new fourier.fitting.Point(
+                        e.getPoint().getX() * 2 / canvas.width - 1,
+                        e.getPoint().getY() * 2 / canvas.width - 1)
+                );
+            }
+
             canvas.repaint();
         }
 
