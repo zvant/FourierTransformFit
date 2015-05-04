@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
+
+import javafx.geometry.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 
 public class GraphicFitting
 {
@@ -33,6 +37,7 @@ public class GraphicFitting
 	private FourierTransform tranformation = new FourierTransform();
 	private boolean if_show_coordinate_option = false;
 	private boolean if_show_graph_option = true;
+	private boolean if_draw_curve_option = false;
 
 	/**
 	 * Launch the application.
@@ -78,8 +83,8 @@ public class GraphicFitting
 	private void initialize() throws Exception
 	{
 		up_limit = -1;
-		for(double coeff : coefficients)
-			coeff = 0.0;
+		for(int i = 0; i < max_n; i ++)
+			coefficients[i] = 0.0;
 		root_frame = new JFrame();
 		root_frame.setIconImage(Toolkit.getDefaultToolkit().getImage(GraphicFitting.class.getResource("/fourier/fitting/graphic/icon.jpg")));
 		root_frame.getContentPane().setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 12));
@@ -145,7 +150,9 @@ public class GraphicFitting
 		clear_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev)
 			{
-				;
+				sample_points.clear();
+				if_draw_curve_option = false;
+				canvas.repaint();
 			}
 		});
 		clear_button.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 12));
@@ -155,7 +162,9 @@ public class GraphicFitting
 		fit_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev)
 			{
+				if_draw_curve_option = true;
 				startFitting();
+				canvas.repaint();
 			}
 		});
 		fit_button.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 12));
@@ -223,6 +232,7 @@ public class GraphicFitting
 		up_limit = ((Integer)(n_comboBox.getSelectedItem())).intValue();
 		if(tranformation.setOrder(up_limit) && tranformation.setPoints(sample_points))
 		{
+			System.out.println("fit for n="+up_limit);
 			coefficients = tranformation.getFitting();
 			for(int i = 0; i < max_n; i ++)
 				field_n[i].setText(coefficients[i] + "");
@@ -285,6 +295,21 @@ public class GraphicFitting
 						4, 4)
 				);
 			}
+			
+			g2.setColor(Color.green);
+			for(double t = 0, x, y; (t < 2 * Math.PI )&& if_draw_curve_option; t += Math.PI / 20)
+			{
+				x = 0.0;
+				y = 0.0;
+				for(int i = 0; i < up_limit; i ++)
+				{
+					x += coefficients[i] * Math.cos(i * t);
+					y += coefficients[i] * Math.sin(i * t);
+				}
+				x = (x + 1) * width / 2;
+				y = (y + 1) * width / 2;
+				g2.draw(new Rectangle2D.Double(x, y, 2, 2));
+			} // draw the fitting curve
 		}
 		
 		public void loadGraph()
