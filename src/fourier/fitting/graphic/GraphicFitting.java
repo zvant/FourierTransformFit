@@ -16,7 +16,6 @@ import javax.swing.*;
 public class GraphicFitting {
 
     // important components :
-
     private static Dimension screen; // screen resolution
     private JFrame root_frame; // base frame
     private JPanel control_panel; // control panel in the bottom
@@ -36,8 +35,9 @@ public class GraphicFitting {
     private FourierTransform tranformation = new FourierTransform();
     private boolean if_show_coordinate_option = false;
     private boolean if_show_graph_option = true;
+    private boolean if_draw_curve_option = false;
 
-    private Font font = new Font("Times New Roman", Font.PLAIN, 12);
+    private Font font = new Font("Helvetica", Font.PLAIN, 15);
 
     /**
      * Launch the application.
@@ -73,8 +73,8 @@ public class GraphicFitting {
      */
     private void initialize() throws Exception {
         up_limit = -1;
-        for (double coeff : coefficients) {
-            coeff = 0.0;
+        for (int i = 0; i < max_n; i++) {
+            coefficients[i] = 0.0;
         }
         root_frame = new JFrame();
         root_frame.setIconImage(Toolkit.getDefaultToolkit().getImage(GraphicFitting.class.getResource("/fourier/fitting/graphic/icon.jpg")));
@@ -138,7 +138,9 @@ public class GraphicFitting {
         JButton clear_button = new JButton("clear points");
         clear_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
-                ;
+                sample_points.clear();
+                if_draw_curve_option = false;
+                canvas.repaint();
             }
         });
         clear_button.setFont(font);
@@ -147,7 +149,9 @@ public class GraphicFitting {
         JButton fit_button = new JButton("start fitting");
         fit_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
+                if_draw_curve_option = true;
                 startFitting();
+                canvas.repaint();
             }
         });
         fit_button.setFont(font);
@@ -211,6 +215,7 @@ public class GraphicFitting {
     private void startFitting() {
         up_limit = ((Integer) (n_comboBox.getSelectedItem())).intValue();
         if (tranformation.setOrder(up_limit) && tranformation.setPoints(sample_points)) {
+            System.out.println("fit for n=" + up_limit);
             coefficients = tranformation.getFitting();
             for (int i = 0; i < max_n; i++) {
                 field_n[i].setText(coefficients[i] + "");
@@ -223,7 +228,7 @@ public class GraphicFitting {
     private class CanvasPanel extends JPanel {
 
         public int width = screen.width / 5;
-        public BufferedImage image = new BufferedImage(width, width, BufferedImage.TYPE_INT_RGB);
+        public BufferedImage image = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
         public Dimension size = new Dimension(width, width); // CanvasPanel should be width * width in default
 
         public CanvasPanel() {
@@ -231,12 +236,16 @@ public class GraphicFitting {
             this.addMouseListener(new MouseClickHandler());
             this.addMouseMotionListener(new MouseCursorHandler());
         }
+        
+        public void update(Graphics g){
+            paintComponent(g);
+        }
 
         @Override
         public void paintComponent(Graphics g) {
-            Graphics2D gbuf = (Graphics2D) image.getGraphics();
-            //g.drawImage(new BufferedImage(width, width, BufferedImage.TYPE_INT_RGB), 0, 0, null); What does this mean?
-            gbuf.drawRect(0, 0, width, width);;
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(Color.WHITE);
+            g2.fillRect(0, 0, width, width);
             if (if_show_graph_option) {
                 int x_shift = 0, y_shift = 0;
                 if (width > image.getWidth()) {
@@ -244,33 +253,45 @@ public class GraphicFitting {
                 } else {
                     y_shift = (width - image.getHeight()) / 2;
                 }
-                gbuf.drawImage(image, x_shift, y_shift, null);
+                g2.drawImage(image, x_shift, y_shift, null);
             } // draw the graph from image
 
             if (if_show_coordinate_option) {
-                gbuf.setColor(Color.yellow);
+                g2.setColor(Color.yellow);
                 for (int i = 0, n = 20; i < n; i++) {
-                    gbuf.draw(new Line2D.Double(0, width * i / n, width, width * i / n));
-                    gbuf.draw(new Line2D.Double(width * i / n, 0, width * i / n, width));
+                    g2.draw(new Line2D.Double(0, width * i / n, width, width * i / n));
+                    g2.draw(new Line2D.Double(width * i / n, 0, width * i / n, width));
                 }
-                gbuf.draw(new Line2D.Double(0, width - 1, width, width - 1));
-                gbuf.draw(new Line2D.Double(width - 1, 0, width - 1, width));
+                g2.draw(new Line2D.Double(0, width - 1, width, width - 1));
+                g2.draw(new Line2D.Double(width - 1, 0, width - 1, width));
 
-                gbuf.draw(new Line2D.Double(0, 1 + width / 2, width, 1 + width / 2));
-                gbuf.draw(new Line2D.Double(1 + width / 2, 0, 1 + width / 2, width));
-                gbuf.draw(new Line2D.Double(0, width / 2 - 1, width, width / 2 - 1));
-                gbuf.draw(new Line2D.Double(width / 2 - 1, 0, width / 2 - 1, width)); // bold the x & y axis
+                g2.draw(new Line2D.Double(0, 1 + width / 2, width, 1 + width / 2));
+                g2.draw(new Line2D.Double(1 + width / 2, 0, 1 + width / 2, width));
+                g2.draw(new Line2D.Double(0, width / 2 - 1, width, width / 2 - 1));
+                g2.draw(new Line2D.Double(width / 2 - 1, 0, width / 2 - 1, width)); // bold the x & y axis
             } // draw coordinate system and grid
 
-            gbuf.setColor(Color.red);
+            g2.setColor(Color.red);
             for (fourier.fitting.Point p : sample_points) {
-                gbuf.draw(new Rectangle2D.Double(
+                g2.draw(new Rectangle2D.Double(
                         (p.getX() + 1) * width / 2 - 2,
                         (p.getY() + 1) * width / 2 - 2,
                         4, 4)
                 );
             }
-            g.drawImage(image, 0, 0, this);
+
+            g2.setColor(Color.green);
+            for (double t = 0, x, y; (t < 2 * Math.PI) && if_draw_curve_option; t += Math.PI / 20) {
+                x = 0.0;
+                y = 0.0;
+                for (int i = 0; i < up_limit; i++) {
+                    x += coefficients[i] * Math.cos(i * t);
+                    y += coefficients[i] * Math.sin(i * t);
+                }
+                x = (x + 1) * width / 2;
+                y = (y + 1) * width / 2;
+                g2.draw(new Rectangle2D.Double(x, y, 2, 2));
+            } // draw the fitting curve
         }
 
         public void loadGraph() {
