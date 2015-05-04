@@ -294,7 +294,7 @@ public class GraphicFitting
 						(p.getY() + 1) * width / 2 - 2,
 						4, 4)
 				);
-			}
+			} // draw the clicked points
 			
 			g2.setColor(Color.green);
 			for(double t = 0, x, y; (t < 2 * Math.PI )&& if_draw_curve_option; t += Math.PI / 20)
@@ -344,10 +344,26 @@ public class GraphicFitting
 		public void mouseClicked(MouseEvent ev)
 	      {
 	         System.out.println("clicked at " + ev.getPoint());
-	         sample_points.add(new fourier.fitting.Point(
+	         boolean is_remove = false;
+	         int x, y;
+	         for(fourier.fitting.Point p : sample_points)
+	         {
+	        	 x = (int)((p.getX() + 1) * canvas.width / 2);
+	        	 y = (int)((p.getY() + 1) * canvas.width / 2);
+	        	 if(Math.abs(ev.getPoint().getX() - x) + Math.abs(ev.getPoint().getY() - y) <= 4)
+	        	 {
+	        		 is_remove = true;
+	        		 sample_points.remove(p);
+	        		 break;
+	        	 }
+	         }
+	         if(!is_remove)
+	         {
+	        	 sample_points.add(new fourier.fitting.Point(
 	        		 ev.getPoint().getX() * 2 / canvas.width - 1,
 	        		 ev.getPoint().getY() * 2 / canvas.width - 1)
-	         );
+	        	 );
+	         }
 	         canvas.repaint();
 	      }
 	}
