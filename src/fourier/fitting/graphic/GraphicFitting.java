@@ -15,6 +15,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -47,6 +49,8 @@ public class GraphicFitting extends javax.swing.JFrame {
     private boolean show_curve = false;
 
     private ArrayList<Point2D> sample_points = new ArrayList<Point2D>(); // points to get fitting
+    private int highlight = -1;
+    private int dragging = -1;
 
     private Complex[] coef = new Complex[]{new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)};
     public static final double SCALE = 100;
@@ -85,7 +89,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fourier ");
 
-        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
         jPanel1.setDoubleBuffered(false);
         jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
 
@@ -283,7 +287,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             model[i + n][0] = i;
             model[i + n][1] = 0.0;
             model[i + n][2] = 0.0;
-            model[i + n][3] = new Complex(0,0);
+            model[i + n][3] = new Complex(0, 0);
         }
         coefficients_table.setModel(new javax.swing.table.DefaultTableModel(
                 model,
@@ -306,9 +310,9 @@ public class GraphicFitting extends javax.swing.JFrame {
 
     private void button_calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_calculateActionPerformed
         // TODO add your handling code here:
-        coef[n] = new Complex(0.5,1);
-        coef[n+1] = new Complex(0.25,0.1);
-        for(int i=0;i<2*n+1;i++){
+        coef[n] = new Complex(0.5, 1);
+        coef[n + 1] = new Complex(0.25, 0.1);
+        for (int i = 0; i < 2 * n + 1; i++) {
             coefficients_table.setValueAt(coef[i].re(), i, 1);
             coefficients_table.setValueAt(coef[i].im(), i, 2);
             coefficients_table.setValueAt(coef[i], i, 3);
@@ -367,9 +371,10 @@ public class GraphicFitting extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private class FourierCanvas extends javax.swing.JPanel
-            implements MouseListener, MouseMotionListener {
+            implements MouseListener, MouseMotionListener, ComponentListener {
 
         private BufferedImage image;
+        private AffineTransform trans;
 
         /**
          * Creates new form FourierCanvas
@@ -377,6 +382,10 @@ public class GraphicFitting extends javax.swing.JFrame {
         public FourierCanvas() {
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
+            this.addComponentListener(this);
+            trans = new AffineTransform();
+            trans.translate(getWidth() / 2.0, getHeight() / 2.0);
+            trans.scale(SCALE, SCALE);
         }
 
         @Override
@@ -388,40 +397,45 @@ public class GraphicFitting extends javax.swing.JFrame {
             g2.setColor(Color.WHITE);
             g2.fillRect(0, 0, width, height);
 
-            AffineTransform trans = new AffineTransform();
-            trans.translate(width / 2.0, height / 2.0);
-            trans.scale(SCALE, SCALE);
-            
             if (show_image) {
                 //g2.drawImage(image, 0, 0, width, height, null);
             }
 
             if (show_grid) {
                 g2.setColor(Color.yellow);
-                for (int x = 0; x <= width/2.0; x+=50) {
-                    g2.draw(new Line2D.Double(width/2.0 + x, 0, width/2.0 + x, height));
-                    g2.draw(new Line2D.Double(width/2.0 - x, 0, width/2.0 - x, height));
+                for (int x = 0; x <= width / 2.0; x += 50) {
+                    g2.draw(new Line2D.Double(width / 2.0 + x, 0, width / 2.0 + x, height));
+                    g2.draw(new Line2D.Double(width / 2.0 - x, 0, width / 2.0 - x, height));
                 }
-                for (int y = 0; y <= height/2.0; y+=50) {
-                    g2.draw(new Line2D.Double(0, height/2.0 + y, width, height/2.0 + y));
-                    g2.draw(new Line2D.Double(0, height/2.0 - y, width, height/2.0 - y));
+                for (int y = 0; y <= height / 2.0; y += 50) {
+                    g2.draw(new Line2D.Double(0, height / 2.0 + y, width, height / 2.0 + y));
+                    g2.draw(new Line2D.Double(0, height / 2.0 - y, width, height / 2.0 - y));
                 }
-                
+
                 g2.setStroke(new BasicStroke(2f));
-                g2.draw(new Line2D.Double(width/2.0, 0, width/2.0, height));
-                g2.draw(new Line2D.Double(0, height/2.0, width, height/2.0));
+                g2.draw(new Line2D.Double(width / 2.0, 0, width / 2.0, height));
+                g2.draw(new Line2D.Double(0, height / 2.0, width, height / 2.0));
 
             }
 
             g2.setStroke(new BasicStroke());
             g2.setColor(Color.red);
-            for (Point2D p : sample_points) {
+            for (int i = 0; i < sample_points.size(); i++) {
+                Point2D p = sample_points.get(i);
                 Point2D tp = trans.transform(p, null);
-                g2.draw(new Ellipse2D.Double(
-                        tp.getX() - 2,
-                        tp.getY() - 2,
-                        4, 4)
-                );
+                if (highlight == i) {
+                    g2.fill(new Ellipse2D.Double(
+                            tp.getX() - 4,
+                            tp.getY() - 4,
+                            8, 8)
+                    );
+                } else {
+                    g2.draw(new Ellipse2D.Double(
+                            tp.getX() - 2,
+                            tp.getY() - 2,
+                            4, 4)
+                    );
+                }
             }
 
             g2.setColor(Color.blue);
@@ -431,15 +445,15 @@ public class GraphicFitting extends javax.swing.JFrame {
                 for (double t = 0; t < 2 * Math.PI; t += Math.PI / 100) {
                     double x = 0, y = 0;
                     for (int i = -n; i <= n; i++) {
-                        x += coef[i+n].re() * Math.cos(i * t) - coef[i+n].re() * Math.sin(i * t);
-                        y += coef[i+n].im() * Math.cos(i * t) + coef[i+n].re() * Math.sin(i * t);
+                        x += coef[i + n].re() * Math.cos(i * t) - coef[i + n].re() * Math.sin(i * t);
+                        y += coef[i + n].im() * Math.cos(i * t) + coef[i + n].re() * Math.sin(i * t);
                     }
-                    Point2D tp = trans.transform(new Point2D.Double(x,y), null);
+                    Point2D tp = trans.transform(new Point2D.Double(x, y), null);
                     System.out.println(tp.getX() + " " + tp.getY());
                     curve.add(tp);
                 }
-                for(int i=0;i < curve.size(); i++){
-                    g2.draw(new Line2D.Double(curve.get(i), curve.get((i+1)%curve.size())));
+                for (int i = 0; i < curve.size(); i++) {
+                    g2.draw(new Line2D.Double(curve.get(i), curve.get((i + 1) % curve.size())));
                 }
             }
         }
@@ -467,33 +481,36 @@ public class GraphicFitting extends javax.swing.JFrame {
         }
 
         public void mousePressed(MouseEvent e) {
-            boolean is_remove = false;
-            AffineTransform trans = new AffineTransform();
-            trans.translate(getWidth() / 2.0, getHeight() / 2.0);
-            trans.scale(SCALE, SCALE);
-            for (Point2D p : sample_points) {
-                if (trans.transform(p, null).distance(e.getPoint()) <= 4) {
+            if (highlight != -1) {
+                dragging = highlight;
+            } else {
+                /*Treat as click event*/
+                boolean is_remove = false;
+                for (Point2D p : sample_points) {
+                    if (trans.transform(p, null).distance(e.getPoint()) <= 4) {
 
-                    is_remove = true;
-                    sample_points.remove(p);
-                    break;
+                        is_remove = true;
+                        sample_points.remove(p);
+                        break;
+                    }
                 }
-            }
-            if (!is_remove) {
-                Point2D newpoint = null;
-                try {
-                    newpoint = trans.inverseTransform(e.getPoint(), null);
-                } catch (NoninvertibleTransformException ex) {
-                    Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
+                if (!is_remove) {
+                    Point2D newpoint = null;
+                    try {
+                        newpoint = trans.inverseTransform(e.getPoint(), null);
+                    } catch (NoninvertibleTransformException ex) {
+                        Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    System.out.println("clicked at " + newpoint.toString());
+                    sample_points.add(newpoint);
                 }
-                System.out.println("clicked at " + newpoint.toString());
-                sample_points.add(newpoint);
-            }
 
-            repaint();
+                repaint();
+            }
         }
 
         public void mouseReleased(MouseEvent e) {
+            dragging = -1;
         }
 
         public void mouseEntered(MouseEvent e) {
@@ -502,45 +519,83 @@ public class GraphicFitting extends javax.swing.JFrame {
         public void mouseExited(MouseEvent e) {
         }
 
-        public void mouseMoved(MouseEvent ev) {
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+        public void mouseMoved(MouseEvent e) {
+            for (int i = 0; i < sample_points.size(); i++) {
+                Point2D p = sample_points.get(i);
+                if (trans.transform(p, null).distance(e.getPoint()) <= 8) {
+                    highlight = i;
+                    repaint();
+                    return;
+                }
+            }
+            if (highlight != -1) {
+                highlight = -1;
+                repaint();
+            }
         }
 
         public void mouseDragged(MouseEvent e) {
+            if (dragging != -1) {
+                try {
+                    sample_points.set(dragging, trans.inverseTransform(e.getPoint(), null));
+                } catch (NoninvertibleTransformException ex) {
+                    Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                repaint();
+            }
+        }
+
+        public void componentResized(ComponentEvent ce) {
+            trans.setToIdentity();
+            trans.translate(getWidth() / 2.0, getHeight() / 2.0);
+            trans.scale(SCALE, SCALE);
+        }
+
+        public void componentMoved(ComponentEvent ce) {
+        }
+
+        public void componentShown(ComponentEvent ce) {
+        }
+
+        public void componentHidden(ComponentEvent ce) {
         }
     }
-    
-    private class ComplexIconRenderer extends JComponent implements TableCellRenderer{
+
+    private class ComplexIconRenderer extends JComponent implements TableCellRenderer {
+
         private static final int SIZE = 32;
         private Complex value;
-        
-        public ComplexIconRenderer(){
+
+        public ComplexIconRenderer() {
             super();
-            value = new Complex(0,0);
+            value = new Complex(0, 0);
         }
-        
-        public void paintComponent(Graphics g){
+
+        public void paintComponent(Graphics g) {
             g.setColor(Color.BLACK);
-            g.drawOval(0, 0 , SIZE, SIZE);
+            g.drawOval(0, 0, SIZE, SIZE);
         }
-        
+
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            this.value = (Complex) value;   
+            this.value = (Complex) value;
             return this;
         }
     }
-    
+
     private class CustomTable extends JTable {
+
         private ComplexIconRenderer complex_renderer = new ComplexIconRenderer();
-        public CustomTable(){
+
+        public CustomTable() {
             super();
         }
-        
-        public TableCellRenderer getCellRenderer(int row, int column){
-            if(column == 3)
+
+        public TableCellRenderer getCellRenderer(int row, int column) {
+            if (column == 3) {
                 return complex_renderer;
-            else
+            } else {
                 return super.getCellRenderer(row, column);
+            }
         }
     }
 }
