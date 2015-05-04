@@ -4,7 +4,7 @@
 just another class for complex numbers.
 
 ### fourier.fitting.FourierTransform
-fitting and transformation. the core method read ArrayList<java.awt.geom.Point2D> as input.
+fitting and transformation. the core method read ArrayList\<java.awt.geom.Point2D\> as input.
 
 ### fourier.fitting.graphic.GraphicFitting
 the graphical interface built using NetBeans IDE.
