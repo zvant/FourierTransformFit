@@ -1,106 +1,157 @@
 
 package fourier.fitting;
 
-public class Complex {
-    private final double re;   // the real part
-    private final double im;   // the imaginary part
+import java.lang.Math;
 
-    // create a new object with the given real and imaginary parts
-    public Complex(double real, double imag) {
+public class Complex
+{
+    private final double re; // the real part
+    private final double im; // the imaginary part
+
+    public Complex(double real, double imag)
+    {
         re = real;
         im = imag;
     }
+    public Complex(Complex z)
+    {
+    	re = z.re();
+    	im = z.im();
+    }
 
-    // return a string representation of the invoking Complex object
     @Override
     public String toString() {
-        if (im == 0) return re + "";
-        if (re == 0) return im + "i";
-        if (im <  0) return re + " - " + (-im) + "i";
+    	double epsilon = 1E-3; // values less than epsilon would be treated as zero when printed
+
+        if (Math.abs(im) < epsilon && Math.abs(re) < epsilon)
+        	return "0.0";
+        if (Math.abs(im) < epsilon)
+        	return re + "";
+        if (Math.abs(re) < epsilon)
+        	return im + "i";
+        if (im <  0)
+        	return re + " - " + (-im) + "i";
+        
         return re + " + " + im + "i";
     }
 
-    // return abs/modulus/magnitude and angle/phase/argument
-    public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
-    public double phase() { return Math.atan2(im, re); }  // between -pi and pi
+    public double abs()
+    {
+    	return Math.hypot(re, im);
+    } // Math.sqrt(re*re + im*im)
+    
+    public double phase()
+    {
+    	return Math.atan2(im, re);
+    } // between -pi and pi
 
-    // return a new Complex object whose value is (this + b)
-    public Complex plus(Complex b) {
-        Complex a = this;             // invoking object
-        double real = a.re + b.re;
-        double imag = a.im + b.im;
-        return new Complex(real, imag);
+    // plus methods:
+    public Complex plus(Complex b)
+    {
+    	return new Complex(this.re + b.re, this.im + b.im);
+    }
+    public static Complex plus(Complex a, Complex b)
+    {
+    	return a.plus(b);
     }
 
-    // return a new Complex object whose value is (this - b)
-    public Complex minus(Complex b) {
-        Complex a = this;
-        double real = a.re - b.re;
-        double imag = a.im - b.im;
-        return new Complex(real, imag);
+    // minus methods:
+    public Complex minus(Complex b)
+    {
+        return new Complex(this.re - b.re, this.im - b.im);
+    }
+    public static Complex minus(Complex a, Complex b)
+    {
+    	return a.minus(b);
     }
 
-    // return a new Complex object whose value is (this * b)
-    public Complex times(Complex b) {
-        Complex a = this;
-        double real = a.re * b.re - a.im * b.im;
-        double imag = a.re * b.im + a.im * b.re;
-        return new Complex(real, imag);
+    // times methods:
+    public Complex times(Complex b)
+    {
+        return new Complex(
+        		this.re * b.re - this.im * b.im,
+        		this.re * b.im + this.im * b.re
+        );
     }
-
-    // scalar multiplication
-    // return a new object whose value is (this * alpha)
-    public Complex times(double alpha) {
-        return new Complex(alpha * re, alpha * im);
+    public static Complex times(Complex a, Complex b)
+    {
+    	return a.times(b);
     }
-
-    // return a new Complex object whose value is the conjugate of this
-    public Complex conjugate() {  return new Complex(re, -im); }
-
-    // return a new Complex object whose value is the reciprocal of this
-    public Complex reciprocal() {
-        double scale = re*re + im*im;
-        return new Complex(re / scale, -im / scale);
+    
+    public Complex times(double alpha)
+    {
+    	return new Complex(this.re * alpha, this.im * alpha);
     }
-
-    // return the real or imaginary part
-    public double re() { return re; }
-    public double im() { return im; }
-
-    // return a / b
-    public Complex divides(Complex b) {
-        Complex a = this;
+    public static Complex times(Complex z, double alpha)
+    {
+        return z.times(alpha);
+    }
+    public static Complex times(Double alpha, Complex z)
+    {
+    	return z.times(alpha);
+    }
+    
+    // divides methods:
+    public Complex divides(Complex b)
+    {
+        return this.times(b.reciprocal());
+    }
+    public static Complex divides(Complex a, Complex b)
+    {
         return a.times(b.reciprocal());
     }
 
-    // return a new Complex object whose value is the complex exponential of this
-    public Complex exp() {
+    public Complex divides(double alpha)
+    {
+        return new Complex(re / alpha, im / alpha);
+    }
+    public static Complex divides(Complex z, double alpha)
+    {
+        return new Complex(z.re / alpha, z.im / alpha);
+    }
+    public static Complex divides(Double alpha, Complex z)
+    {
+        return new Complex(alpha, 0.0).divides(z);
+    }
+
+    // conjugate:
+    public Complex conjugate()
+    {
+        return new Complex(re, -im);
+    }
+
+    // reciprocal:
+    public Complex reciprocal()
+    {
+        double scale = re * re + im * im;
+        return new Complex(re / scale, -im / scale);
+    }
+
+    public double re() { return re; }
+    public double im() { return im; }
+
+    // complex exponential e^z:
+    public Complex exp()
+    {
         return new Complex(Math.exp(re) * Math.cos(im), Math.exp(re) * Math.sin(im));
     }
 
-    // return a new Complex object whose value is the complex sine of this
-    public Complex sin() {
+    // complex sine:
+    public Complex sin()
+    {
         return new Complex(Math.sin(re) * Math.cosh(im), Math.cos(re) * Math.sinh(im));
     }
 
-    // return a new Complex object whose value is the complex cosine of this
-    public Complex cos() {
+    // complex cosine:
+    public Complex cos()
+    {
         return new Complex(Math.cos(re) * Math.cosh(im), -Math.sin(re) * Math.sinh(im));
     }
 
-    // return a new Complex object whose value is the complex tangent of this
-    public Complex tan() {
+    // complex tangent:
+    public Complex tan()
+    {
         return sin().divides(cos());
-    }
-    
-
-
-    // a static version of plus
-    public static Complex plus(Complex a, Complex b) {
-        double real = a.re + b.re;
-        double imag = a.im + b.im;
-        Complex sum = new Complex(real, imag);
-        return sum;
     }
 
 }
