@@ -5,15 +5,15 @@ import java.util.ArrayList;
 public class FourierTransform
 {
 	private static int MAX = 11;
-	private double[] coefficient = new double[MAX];
+	private double[] coefficients = new double[MAX];
 	private int up_limit;
 	ArrayList<Point> sample_points;
 	
 	public FourierTransform()
 	{
 		up_limit = -1;
-		for(double coeff : coefficient)
-			coeff = 0.0;
+		for(int i = 0; i < MAX; i ++)
+			coefficients[i] = 0.0;
 	}
 	
 	public boolean setPoints(ArrayList<Point> sample)
@@ -46,8 +46,8 @@ public class FourierTransform
 		///////////////////////////////
 		// The fitting algorithm //////
 		///////////////////////////////
-		coefficient[1] = 0.25;
-		coefficient[0] = 0.5; // just for tests
-		return coefficient;
+		coefficients[1] = 0.25;
+		coefficients[0] = 0.5; // just for tests
+		return coefficients;
 	}
 }
