@@ -1,13 +1,13 @@
 # FourierTransformFit
 ## Class
-### fourier.fitting.Point
-two dimentional point, with coordinate in double value.
+### fourier.fitting.Complex
+just another class for complex numbers.
 
 ### fourier.fitting.FourierTransform
-fitting and transformation. the core method read ArrayList<fourier.fitting.Point> as input and return double[] as result.
+fitting and transformation. the core method read ArrayList<java.awt.geom.Point2D> as input.
 
 ### fourier.fitting.graphic.GraphicFitting
-the graphical interface
+the graphical interface built using NetBeans IDE.
 #### now
 construct the main interface, load graph from an image file, draw a coordinate system over the graph, add sample points with mouse click.
 #### what is next
