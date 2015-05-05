@@ -135,11 +135,19 @@ public class Complex
     {
         return new Complex(Math.exp(re) * Math.cos(im), Math.exp(re) * Math.sin(im));
     }
+    public static Complex exp(Complex z)
+    {
+        return z.exp();
+    }
 
     // complex sine:
     public Complex sin()
     {
         return new Complex(Math.sin(re) * Math.cosh(im), Math.cos(re) * Math.sinh(im));
+    }
+    public static Complex sin(Complex z)
+    {
+        return z.sin();
     }
 
     // complex cosine:
@@ -147,11 +155,19 @@ public class Complex
     {
         return new Complex(Math.cos(re) * Math.cosh(im), -Math.sin(re) * Math.sinh(im));
     }
+    public static Complex cos(Complex z)
+    {
+        return z.cos();
+    }
 
     // complex tangent:
     public Complex tan()
     {
         return sin().divides(cos());
+    }
+    public static Complex tan(Complex z)
+    {
+        return z.tan();
     }
 
 }
