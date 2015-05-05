@@ -544,7 +544,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             //System.out.println(show_curve);
             if (show_curve) {
                 ArrayList<Point2D> curve = new ArrayList();
-                for (double t = 0; t < 2 * Math.PI; t += Math.PI / (100 * n)) {
+                for (double t = 0; t < 2 * Math.PI; t += Math.PI / Math.min(100 * n, 1500)) {
                     double x = 0, y = 0;
                     for (int i = 0; i < n; i++) {
                         int f = (i > n - i) ? (-n + i) : i;
