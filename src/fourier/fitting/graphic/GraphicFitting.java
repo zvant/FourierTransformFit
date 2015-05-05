@@ -560,7 +560,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                 }
             }
 
-            if (show_animation) {
+            if (show_animation && n != 0) {
                 Complex current = coef[0];
                 for (int i = 1; i * 2 <= n; i++) {
                     /*Level i*/
