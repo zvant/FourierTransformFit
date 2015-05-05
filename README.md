@@ -9,6 +9,6 @@ fitting and transformation. the core method read ArrayList\<java.awt.geom.Point2
 ### fourier.fitting.graphic.GraphicFitting
 the graphical interface built using NetBeans IDE.
 #### now
-construct the main interface, load graph from an image file, draw a coordinate system over the graph, add sample points with mouse click.
+construct the main interface, load graph from an image file, draw a coordinate system over the graph, add & drag sample points with mouse click, fitting using DFT, draw the curve.
 #### what is next
-fitting and transformation, draw the fitting curve.
+improved DFT.
