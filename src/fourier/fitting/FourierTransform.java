@@ -1,54 +1,79 @@
 package fourier.fitting;
 
+import fourier.fitting.Complex;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Zekun Zhang
+ */
 public class FourierTransform
 {
-	private static int MAX = 11;
-	private double[] coefficients = new double[MAX];
-	private int up_limit;
-	ArrayList<Point2D> sample_points;
+	//private static int MAX = 11;
+	//private double[] coefficients = new double[MAX];
+	//private int up_limit;
+	private ArrayList<Complex> sample_points;
+	private ArrayList<Complex> coefficients;
+	private int N;
 	
 	public FourierTransform()
 	{
-		up_limit = -1;
-		for(int i = 0; i < MAX; i ++)
-			coefficients[i] = 0.0;
+		N = 0;
+		sample_points = new ArrayList<Complex>();
+		coefficients = new ArrayList<Complex>();
 	}
 	
-	public boolean setPoints(ArrayList sample)
+	// add a sample complex
+	public void addSample(Complex z)
 	{
-		if(sample != null)
+		sample_points.add(z);
+		N ++;
+	}
+	
+	// do the Discrete Fourier Transformation (DFT):
+	public void transform()
+	{
+		Complex I = new Complex(0.0, 1.0);
+		for(int n = 0; n < N; n ++)
 		{
-			sample_points = sample;
-			return true;
-		}
-		else
-		{
-			sample_points = new ArrayList<Point2D>();
-			return false;
+			Complex zn = new Complex(0.0, 0.0);
+
+			for(int k = 0; k < N; k ++)
+			{
+				Complex zk = sample_points.get(k);
+				zn = zn.plus(zk.times((Complex.times(I, k * n * 2 * Math.PI / N)).exp()));
+			}
+			
+			coefficients.add(zn.divides(N));
 		}
 	}
 	
-	public boolean setOrder(int up_limit)
+	// display the sample and result to stdout:
+	public void showTransform()
 	{
-		if(up_limit <= MAX)
-		{
-			this.up_limit = up_limit;
-			return true;
-		}
-		else
-			return false;
+		System.out.println("\nOriginal Points:");
+		for(Complex zn : sample_points)
+			System.out.print(zn.toString() + ", ");
+		
+		System.out.println("\nTransformed Points:");
+		for(Complex zk : coefficients)
+			System.out.print(zk.toString() + ", ");
 	}
 	
-	public double[] getFitting()
+	public ArrayList<Complex> getSamples()
 	{
-		///////////////////////////////
-		// The fitting algorithm //////
-		///////////////////////////////
-		coefficients[1] = 0.25;
-		coefficients[0] = 0.5; // just for tests
+		return sample_points;
+	}
+	
+	public ArrayList<Complex> getCoeffs()
+	{
 		return coefficients;
+	}
+	
+	public int getN()
+	{
+		return N;
 	}
 }
