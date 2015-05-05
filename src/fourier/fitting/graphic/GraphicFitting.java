@@ -28,6 +28,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,7 +75,7 @@ public class GraphicFitting extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane2 = new javax.swing.JScrollPane();
-        jPanel1 = new FourierCanvas();
+        canvas = new FourierCanvas();
         jScrollPane3 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
         level_slider = new javax.swing.JSlider();
@@ -94,18 +95,18 @@ public class GraphicFitting extends javax.swing.JFrame {
         setTitle("Fourier ");
         setMinimumSize(new java.awt.Dimension(500, 600));
 
-        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
-        jPanel1.setDoubleBuffered(false);
-        jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
+        canvas.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
+        canvas.setDoubleBuffered(false);
+        canvas.setPreferredSize(new java.awt.Dimension(600, 600));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout canvasLayout = new javax.swing.GroupLayout(canvas);
+        canvas.setLayout(canvasLayout);
+        canvasLayout.setHorizontalGroup(
+            canvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        canvasLayout.setVerticalGroup(
+            canvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
@@ -177,6 +178,11 @@ public class GraphicFitting extends javax.swing.JFrame {
         });
 
         button_loadImage.setText("Load Image");
+        button_loadImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_loadImageActionPerformed(evt);
+            }
+        });
 
         checkbox_show_grid.setText("Show Grid");
         checkbox_show_grid.addActionListener(new java.awt.event.ActionListener() {
@@ -223,14 +229,13 @@ public class GraphicFitting extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
                                 .addComponent(button_clear, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(button_loadImage, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(checkbox_show_image)
                                     .addComponent(checkbox_show_grid))
@@ -280,7 +285,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
@@ -291,7 +296,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane3)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(canvas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -362,6 +367,15 @@ public class GraphicFitting extends javax.swing.JFrame {
         repaint();
     }//GEN-LAST:event_button_calculateActionPerformed
 
+    private void button_loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_loadImageActionPerformed
+        // TODO add your handling code here:
+        ((FourierCanvas)canvas).loadImage();
+        if(!show_image){
+            checkbox_show_image.setSelected(true);
+        }
+        repaint();
+    }//GEN-LAST:event_button_loadImageActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -401,6 +415,7 @@ public class GraphicFitting extends javax.swing.JFrame {
     private javax.swing.JButton button_calculate;
     private javax.swing.JButton button_clear;
     private javax.swing.JButton button_loadImage;
+    private javax.swing.JPanel canvas;
     private javax.swing.JCheckBox checkbox_show_curve;
     private javax.swing.JCheckBox checkbox_show_grid;
     private javax.swing.JCheckBox checkbox_show_image;
@@ -408,7 +423,6 @@ public class GraphicFitting extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -421,7 +435,7 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         private BufferedImage image;
         private AffineTransform trans;
-
+        private double image_scale;
         /**
          * Creates new form FourierCanvas
          */
@@ -436,7 +450,7 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         @Override
         public void paintComponent(Graphics g) {
-            System.out.println("repaint");
+            //System.out.println("repaint");
             int width = getWidth();
             int height = getHeight();
             Graphics2D g2 = (Graphics2D) g;
@@ -445,6 +459,10 @@ public class GraphicFitting extends javax.swing.JFrame {
 
             if (show_image) {
                 //g2.drawImage(image, 0, 0, width, height, null);
+                Point2D lefttop = new Point2D.Double(0.5*image_scale*image.getWidth(), 0.5*image_scale*image.getHeight());
+                System.out.println(lefttop);
+                trans.transform(lefttop, lefttop);
+                g2.drawImage(image, (int)lefttop.getX(), (int)lefttop.getY(), (int)(image_scale*image.getWidth()), (int)(image_scale*image.getHeight()), this);
             }
 
             if (show_grid) {
@@ -485,7 +503,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
 
             g2.setColor(Color.blue);
-            System.out.println(show_curve);
+            //System.out.println(show_curve);
             if (show_curve) {
                 ArrayList<Point2D> curve = new ArrayList();
                 for (double t = 0; t < 2 * Math.PI; t += Math.PI / 100) {
@@ -495,7 +513,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                         y += coef[i + n].im() * Math.cos(i * t) + coef[i + n].re() * Math.sin(i * t);
                     }
                     Point2D tp = trans.transform(new Point2D.Double(x, y), null);
-                    System.out.println(tp.getX() + " " + tp.getY());
+                    //System.out.println(tp.getX() + " " + tp.getY());
                     curve.add(tp);
                 }
                 for (int i = 0; i < curve.size(); i++) {
@@ -504,22 +522,18 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         }
 
-        public void loadGraph() {
+        public void loadImage() {
             JFileChooser file_chooser = new JFileChooser();
             file_chooser.setCurrentDirectory(new File("."));
-            file_chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            file_chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int result = file_chooser.showOpenDialog(GraphicFitting.this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                ImageIcon icon = new ImageIcon(file_chooser.getSelectedFile().getPath());
-                int width = icon.getIconWidth();
-                int height = icon.getIconHeight();
-                image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
                 try {
-                    File image_file = new File(file_chooser.getSelectedFile().getPath());
-                    image = ImageIO.read(image_file);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    image = ImageIO.read(new File(file_chooser.getSelectedFile().getPath()));
+                } catch (IOException ex) {
+                    Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                image_scale = Math.min(this.getWidth()/image.getWidth(), this.getHeight()/image.getHeight())/SCALE;
             }
         }
 
@@ -556,7 +570,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                     } catch (NoninvertibleTransformException ex) {
                         Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    System.out.println("clicked at " + newpoint.toString());
+                    //System.out.println("clicked at " + newpoint.toString());
                     sample_points.add(newpoint);
                 } else {
                     dragging = -1;
