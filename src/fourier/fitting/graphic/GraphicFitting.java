@@ -34,12 +34,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -60,6 +62,9 @@ public class GraphicFitting extends javax.swing.JFrame {
     private Complex[] coef = new Complex[]{new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)};
     public static final double SCALE = 100;
     private int n = 2;
+
+    private ComplexIconEditor editor = new ComplexIconEditor();
+    private ComplexIconRenderer renderer = new ComplexIconRenderer();
 
     /**
      * Creates new form GraphicFitting
@@ -85,7 +90,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         level_slider = new javax.swing.JSlider();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        coefficients_table = new CustomTable();
+        coefficients_table = new javax.swing.JTable();
         button_calculate = new javax.swing.JButton();
         button_clear = new javax.swing.JButton();
         button_loadImage = new javax.swing.JButton();
@@ -364,7 +369,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         coefficients_table.setModel(new javax.swing.table.DefaultTableModel(
                 model,
                 new String[]{
-                    "n", "Re", "Im", "Complex"
+                    "n", "Re", "Im", ""
                 }
         ) {
             Class[] types = new Class[]{
@@ -383,6 +388,10 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         });
         coefficients_table.getModel().addTableModelListener(new TableListener());
+        coefficients_table.getColumnModel().getColumn(3).setResizable(false);
+        coefficients_table.getColumnModel().getColumn(3).setWidth(ComplexIconRenderer.SIZE);
+        coefficients_table.getColumnModel().getColumn(3).setCellEditor(editor);
+        coefficients_table.getColumnModel().getColumn(3).setCellRenderer(renderer);
 
         coef = new Complex[n];
         for (int i = 0; i < n; i++) {
@@ -472,13 +481,13 @@ public class GraphicFitting extends javax.swing.JFrame {
             g2.setColor(Color.WHITE);
             g2.fillRect(0, 0, width, height);
 
-            System.out.println(show_image);
-            if (show_image) {
+            //System.out.println(show_image);
+            if (show_image && image != null) {
                 //g2.drawImage(image, 0, 0, width, height, null);
                 Point2D lefttop = new Point2D.Double(-0.5 * image_scale * image.getWidth(), -0.5 * image_scale * image.getHeight());
-                System.out.println(lefttop);
+                //System.out.println(lefttop);
                 trans.transform(lefttop, lefttop);
-                System.out.println(lefttop);
+                //System.out.println(lefttop);
                 g2.drawImage(image, (int) lefttop.getX(), (int) lefttop.getY(), (int) (image_scale * image.getWidth() * SCALE), (int) (image_scale * image.getHeight() * SCALE), this);
             }
 
@@ -526,10 +535,10 @@ public class GraphicFitting extends javax.swing.JFrame {
                 for (double t = 0; t < 2 * Math.PI; t += Math.PI / 100) {
                     double x = 0, y = 0;
                     for (int i = 0; i < n; i++) {
-                        x += coef[i].re() * Math.cos(i * t) - coef[i].re() * Math.sin(i * t);
+                        x += coef[i].re() * Math.cos(i * t) - coef[i].im() * Math.sin(i * t);
                         y += coef[i].im() * Math.cos(i * t) + coef[i].re() * Math.sin(i * t);
                     }
-                    Point2D tp = trans.transform(new Point2D.Double(x, y), null);
+                    Point2D tp = trans.transform(new Point2D.Double(x, -y), null);
                     //System.out.println(tp.getX() + " " + tp.getY());
                     curve.add(tp);
                 }
@@ -551,7 +560,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                     Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 image_scale = Math.min((double) this.getWidth() / image.getWidth(), (double) this.getHeight() / image.getHeight()) / SCALE;
-                System.out.println("scale=" + image_scale);
+                //System.out.println("scale=" + image_scale);
             }
         }
 
@@ -647,20 +656,42 @@ public class GraphicFitting extends javax.swing.JFrame {
         }
     }
 
-    private class ComplexIconRenderer extends JComponent implements TableCellRenderer {
+    private class ComplexIconRenderer extends JComponent implements TableCellRenderer, MouseListener, MouseMotionListener {
 
         private static final int SIZE = 32;
         private Complex value;
+        private final boolean highlight;
+        private final ComplexIconEditor editor;
 
         public ComplexIconRenderer() {
             super();
             value = new Complex(0, 0);
             this.setSize(SIZE, SIZE);
+            this.highlight = false;
+            editor = null;
+        }
+        
+        public ComplexIconRenderer(ComplexIconEditor edit){
+            super();
+            value = new Complex(0,0);
+            this.setSize(SIZE,SIZE);
+            this.highlight = true;
+            this.addMouseListener(this);
+            this.addMouseMotionListener(this);
+            editor = edit;
         }
 
         public void paintComponent(Graphics g) {
+            //System.out.println("Render");
             Graphics2D g2 = (Graphics2D) g;
-            g2.clearRect(0, 0, SIZE, SIZE);
+            System.out.println(highlight);
+            if (highlight) {
+                g2.setColor(Color.LIGHT_GRAY);
+            } else {
+                g2.setColor(Color.WHITE);
+            }
+            g2.fillRect(0, 0, SIZE, SIZE);
+            g2.setColor(Color.BLACK);
             g2.drawOval(0, 0, SIZE, SIZE);
             if (value.abs() > 1e-2) {
                 Path2D arrow = new Path2D.Double();
@@ -676,7 +707,6 @@ public class GraphicFitting extends javax.swing.JFrame {
                 transform.rotate(-angle);
                 transform.translate(length, 0);
                 arrow.transform(transform);
-                g2.setColor(Color.BLACK);
                 g2.draw(arrow);
             } else {
                 g2.draw(new Rectangle2D.Double(SIZE / 2.0 - 0.5, SIZE / 2.0 - 0.5, 1, 1));
@@ -684,35 +714,93 @@ public class GraphicFitting extends javax.swing.JFrame {
         }
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            //System.out.println("get Renderer");
             this.value = (Complex) value;
             return this;
         }
-    }
 
-    private class CustomTable extends JTable {
-
-        private ComplexIconRenderer complex_renderer = new ComplexIconRenderer();
-
-        public CustomTable() {
-            super();
-        }
-
-        public TableCellRenderer getCellRenderer(int row, int column) {
-            if (column == 3) {
-                return complex_renderer;
-            } else {
-                return super.getCellRenderer(row, column);
+        private void update_value(MouseEvent me){
+            if (highlight) {
+                //System.out.println("ha");
+                double re = (double) me.getX() / SIZE * 2 - 1;
+                double im = -(double) me.getY() / SIZE * 2 + 1;
+                value = new Complex(re, im);
+                //System.out.println(value);
+                editor.stopCellEditing();   /*Tell the editor to accept current value*/
+                repaint();
             }
         }
+        
+        public void mouseClicked(MouseEvent me) {
+        }
+
+        public void mousePressed(MouseEvent me) {
+            System.out.println("press");
+            update_value(me);
+        }
+
+        public void mouseReleased(MouseEvent me) {
+        }
+
+        public void mouseEntered(MouseEvent me) {
+        }
+
+        public void mouseExited(MouseEvent me) {
+        }
+
+        public void mouseDragged(MouseEvent me) {
+            System.out.println("drag");
+            update_value(me);
+        }
+
+        public void mouseMoved(MouseEvent me) {
+        }
     }
 
+    private class ComplexIconEditor extends AbstractCellEditor implements TableCellEditor {
+
+        public ComplexIconRenderer renderer = new ComplexIconRenderer(this);
+
+        public ComplexIconEditor() {
+            super();
+            
+        }
+
+        public Object getCellEditorValue() {
+            //System.out.println("get value");
+            return renderer.value;
+        }
+
+        public Component getTableCellEditorComponent(JTable jtable, Object o, boolean bln, int i, int i1) {
+            //System.out.println("get editor");
+            return renderer;
+        }
+
+    }
+
+    /*private class CustomTable extends JTable {
+
+     private ComplexIconRenderer complex_renderer = new ComplexIconRenderer();
+
+     public CustomTable() {
+     super();
+     }
+
+     public TableCellRenderer getCellRenderer(int row, int column) {
+     if (column == 3) {
+     return complex_renderer;
+     } else {
+     return super.getCellRenderer(row, column);
+     }
+     }
+     }*/
     private class TableListener implements TableModelListener {
 
         public void tableChanged(TableModelEvent tme) {
             TableModel model = (TableModel) tme.getSource();
+            model.removeTableModelListener(this); /*Remove temporarily to prevent recursive event*/
             if (tme.getColumn() == 1 || tme.getColumn() == 2) {
                 for (int i = tme.getFirstRow(); i <= tme.getLastRow(); i++) {
-                    System.out.println("Update " + i + " !");
                     Object RV = model.getValueAt(i, 1);
                     Object IV = model.getValueAt(i, 2);
                     double re = (Double) RV;
@@ -720,7 +808,14 @@ public class GraphicFitting extends javax.swing.JFrame {
                     coef[i] = new Complex(re, im);
                     model.setValueAt(coef[i], i, 3);
                 }
+            } else if (tme.getColumn() == 3) {
+                for (int i = tme.getFirstRow(); i <= tme.getLastRow(); i++) {
+                    coef[i] = (Complex) model.getValueAt(i, 3);
+                    model.setValueAt(coef[i].re(), i, 1);
+                    model.setValueAt(coef[i].im(), i, 2);
+                }
             }
+            model.addTableModelListener(this);
             GraphicFitting.this.canvas.repaint();
         }
 

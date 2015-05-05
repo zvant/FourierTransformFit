@@ -252,7 +252,6 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new CustomTable()"/>
                     <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="coefficients_table.getModel().addTableModelListener(new TableListener());"/>
                   </AuxValues>
                 </Component>
