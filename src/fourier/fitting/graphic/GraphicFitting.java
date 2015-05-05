@@ -58,6 +58,7 @@ public class GraphicFitting extends javax.swing.JFrame {
     private boolean show_image = false;
     private boolean show_grid = false;
     private boolean show_curve = true;
+    private boolean show_animation = true;
 
     private ArrayList<Point2D> sample_points = new ArrayList<Point2D>(); // points to get fitting
     private int highlight = -1;
@@ -99,12 +100,12 @@ public class GraphicFitting extends javax.swing.JFrame {
         checkbox_show_grid = new javax.swing.JCheckBox();
         checkbox_show_curve = new javax.swing.JCheckBox();
         checkbox_show_image = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
+        checkbox_show_animation = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         label_level_n = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Fourier ");
+        setTitle("Fourier Transform");
         setMinimumSize(new java.awt.Dimension(500, 600));
 
         canvas.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
@@ -124,7 +125,7 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        jPanel2.setPreferredSize(new java.awt.Dimension(270, 600));
+        jPanel2.setPreferredSize(new java.awt.Dimension(240, 550));
 
         jLabel2.setText("Coefficients");
 
@@ -205,10 +206,11 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox4.setText("Reserved");
-        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+        checkbox_show_animation.setSelected(true);
+        checkbox_show_animation.setText("Show Animation");
+        checkbox_show_animation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox4ActionPerformed(evt);
+                checkbox_show_animationActionPerformed(evt);
             }
         });
 
@@ -221,40 +223,36 @@ public class GraphicFitting extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(203, 203, 203))
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(checkbox_show_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(checkbox_show_grid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(checkbox_show_curve, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(label_level_n, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(button_loadImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(label_level_n)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(button_loadImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                                    .addComponent(checkbox_show_image, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                                    .addComponent(checkbox_show_grid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(checkbox_show_animation)
+                                    .addComponent(checkbox_show_curve, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(4, 4, 4)))))
+                .addGap(20, 20, 20))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,19 +267,19 @@ public class GraphicFitting extends javax.swing.JFrame {
                     .addComponent(button_loadImage))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox4)
+                    .addComponent(checkbox_show_animation)
                     .addComponent(checkbox_show_image))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(checkbox_show_grid, javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkbox_show_grid)
                     .addComponent(checkbox_show_curve))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button_calculate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         jScrollPane3.setViewportView(jPanel2);
@@ -302,7 +300,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3)
                     .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -310,26 +308,28 @@ public class GraphicFitting extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
+    private void checkbox_show_animationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_animationActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox4ActionPerformed
+        show_animation = checkbox_show_animation.isSelected();
+        canvas.repaint();
+    }//GEN-LAST:event_checkbox_show_animationActionPerformed
 
     private void checkbox_show_imageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_imageActionPerformed
         // TODO add your handling code here:
         show_image = checkbox_show_image.isSelected();
-        repaint();
+        canvas.repaint();
     }//GEN-LAST:event_checkbox_show_imageActionPerformed
 
     private void checkbox_show_curveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_curveActionPerformed
         // TODO add your handling code here:
         show_curve = checkbox_show_curve.isSelected();
-        repaint();
+        canvas.repaint();
     }//GEN-LAST:event_checkbox_show_curveActionPerformed
 
     private void checkbox_show_gridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_gridActionPerformed
         // TODO add your handling code here:
         show_grid = checkbox_show_grid.isSelected();
-        repaint();
+        canvas.repaint();
     }//GEN-LAST:event_checkbox_show_gridActionPerformed
 
     private void button_loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_loadImageActionPerformed
@@ -338,13 +338,13 @@ public class GraphicFitting extends javax.swing.JFrame {
         if (!show_image) {
             checkbox_show_image.doClick();
         }
-        repaint();
+        canvas.repaint();
     }//GEN-LAST:event_button_loadImageActionPerformed
 
     private void button_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_clearActionPerformed
         // TODO add your handling code here:
         sample_points.clear();
-        repaint();
+        canvas.repaint();
     }//GEN-LAST:event_button_clearActionPerformed
 
     private void button_calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_calculateActionPerformed
@@ -360,11 +360,11 @@ public class GraphicFitting extends javax.swing.JFrame {
         }
         DFT.transform();
         DFT.showTransform();
-        
+
         coef = DFT.getCoeffs().toArray(new Complex[0]);
-        
+
         updateCoef();
-        repaint();
+        canvas.repaint();
     }//GEN-LAST:event_button_calculateActionPerformed
 
     private void updateCoef() {
@@ -403,9 +403,10 @@ public class GraphicFitting extends javax.swing.JFrame {
         coefficients_table.getColumnModel().getColumn(3).setWidth(ComplexIconRenderer.SIZE);
         coefficients_table.getColumnModel().getColumn(3).setCellEditor(editor);
         coefficients_table.getColumnModel().getColumn(3).setCellRenderer(renderer);
-        
+
         label_level_n.setText("" + n);
-    }     
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -446,11 +447,11 @@ public class GraphicFitting extends javax.swing.JFrame {
     private javax.swing.JButton button_clear;
     private javax.swing.JButton button_loadImage;
     private javax.swing.JPanel canvas;
+    private javax.swing.JCheckBox checkbox_show_animation;
     private javax.swing.JCheckBox checkbox_show_curve;
     private javax.swing.JCheckBox checkbox_show_grid;
     private javax.swing.JCheckBox checkbox_show_image;
     private javax.swing.JTable coefficients_table;
-    private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
@@ -461,11 +462,13 @@ public class GraphicFitting extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private class FourierCanvas extends javax.swing.JPanel
-            implements MouseListener, MouseMotionListener, ComponentListener {
+            implements MouseListener, MouseMotionListener, ComponentListener, Runnable {
 
         private BufferedImage image;
         private AffineTransform trans;
         private double image_scale;
+        private Thread animation_thread;
+        private double time;
 
         /**
          * Creates new form FourierCanvas
@@ -477,6 +480,8 @@ public class GraphicFitting extends javax.swing.JFrame {
             trans = new AffineTransform();
             trans.translate(getWidth() / 2.0, getHeight() / 2.0);
             trans.scale(SCALE, SCALE);
+            animation_thread = new Thread(this);
+            animation_thread.start();
         }
 
         @Override
@@ -552,6 +557,51 @@ public class GraphicFitting extends javax.swing.JFrame {
                 }
                 for (int i = 0; i < curve.size(); i++) {
                     g2.draw(new Line2D.Double(curve.get(i), curve.get((i + 1) % curve.size())));
+                }
+            }
+
+            if (show_animation) {
+                Complex current = coef[0];
+                for (int i = 1; i * 2 <= n; i++) {
+                    /*Level i*/
+                    double radius = coef[i].abs();
+                    Point2D lt = new Point2D.Double(current.re() - radius, -current.im() - radius);
+                    Point2D rb = new Point2D.Double(current.re() + radius, -current.im() + radius);
+                    Point2D center = current.conjugate().getPoint();
+                    double phase = i*time + coef[i].phase();
+                    current = current.plus(Complex.fromPolar(radius, phase));
+                    Point2D endpoint = current.conjugate().getPoint();
+                    trans.transform(lt, lt);
+                    trans.transform(rb, rb);
+                    trans.transform(center, center);
+                    trans.transform(endpoint, endpoint);
+                    Ellipse2D circ = new Ellipse2D.Double();
+                    circ.setFrameFromDiagonal(lt, rb);
+                    g2.setColor(Color.lightGray);
+                    g2.draw(circ);
+                    g2.setColor(Color.darkGray);
+                    g2.draw(new Line2D.Double(center, endpoint));
+
+                    /*Level N-i === -i*/
+                    if (i * 2 != n) {
+                        radius = coef[n-i].abs();
+                        lt = new Point2D.Double(current.re() - radius, -current.im() - radius);
+                        rb = new Point2D.Double(current.re() + radius, -current.im() + radius);
+                        center = current.conjugate().getPoint();
+                        phase = -i*time + coef[n-i].phase();
+                        current = current.plus(Complex.fromPolar(radius, phase));
+                        endpoint = current.conjugate().getPoint();
+                        trans.transform(lt, lt);
+                        trans.transform(rb, rb);
+                        trans.transform(center, center);
+                        trans.transform(endpoint, endpoint);
+                        circ = new Ellipse2D.Double();
+                        circ.setFrameFromDiagonal(lt, rb);
+                        g2.setColor(Color.lightGray);
+                        g2.draw(circ);
+                        g2.setColor(Color.darkGray);
+                        g2.draw(new Line2D.Double(center, endpoint));
+                    }
                 }
             }
         }
@@ -662,6 +712,20 @@ public class GraphicFitting extends javax.swing.JFrame {
         }
 
         public void componentHidden(ComponentEvent ce) {
+        }
+
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(5l);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (show_animation) {
+                    time += 2 * Math.PI / 3000;
+                    this.repaint();
+                }
+            }
         }
     }
 
