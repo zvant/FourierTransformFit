@@ -7,6 +7,7 @@ public class Complex
 {
     private final double re; // the real part
     private final double im; // the imaginary part
+    public static final double EPS = 1E-5; // values less than epsilon would be treated as zero when printed
 
     public Complex(double real, double imag)
     {
@@ -21,13 +22,12 @@ public class Complex
 
     @Override
     public String toString() {
-    	double epsilon = 1E-3; // values less than epsilon would be treated as zero when printed
 
-        if (Math.abs(im) < epsilon && Math.abs(re) < epsilon)
+        if (Math.abs(im) < EPS && Math.abs(re) < EPS)
         	return "0.0";
-        if (Math.abs(im) < epsilon)
+        if (Math.abs(im) < EPS)
         	return re + "";
-        if (Math.abs(re) < epsilon)
+        if (Math.abs(re) < EPS)
         	return im + "i";
         if (im <  0)
         	return re + " - " + (-im) + "i";
