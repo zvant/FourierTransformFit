@@ -57,7 +57,7 @@ public class GraphicFitting extends javax.swing.JFrame {
 
     private boolean show_image = false;
     private boolean show_grid = false;
-    private boolean show_curve = false;
+    private boolean show_curve = true;
 
     private ArrayList<Point2D> sample_points = new ArrayList<Point2D>(); // points to get fitting
     private int highlight = -1;
@@ -75,7 +75,6 @@ public class GraphicFitting extends javax.swing.JFrame {
      */
     public GraphicFitting() {
         initComponents();
-        level_slider.setValue(2);
     }
 
     /**
@@ -91,7 +90,6 @@ public class GraphicFitting extends javax.swing.JFrame {
         canvas = new FourierCanvas();
         jScrollPane3 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
-        level_slider = new javax.swing.JSlider();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         coefficients_table = new javax.swing.JTable();
@@ -103,6 +101,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         checkbox_show_image = new javax.swing.JCheckBox();
         jCheckBox4 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
+        label_level_n = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fourier ");
@@ -127,24 +126,11 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         jPanel2.setPreferredSize(new java.awt.Dimension(270, 600));
 
-        level_slider.setMajorTickSpacing(1);
-        level_slider.setMaximum(30);
-        level_slider.setMinimum(2);
-        level_slider.setPaintLabels(true);
-        level_slider.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        level_slider.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                level_sliderStateChanged(evt);
-            }
-        });
-
         jLabel2.setText("Coefficients");
 
         coefficients_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Integer(-1),  new Double(0.0),  new Double(0.0), ""},
-                { new Integer(0),  new Double(0.0),  new Double(0.0), ""},
-                { new Integer(1),  new Double(0.0),  new Double(0.0), null}
+
             },
             new String [] {
                 "n", "Re", "Im", "Complex"
@@ -204,6 +190,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         });
 
+        checkbox_show_curve.setSelected(true);
         checkbox_show_curve.setText("Show Curve");
         checkbox_show_curve.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -225,44 +212,57 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Level n");
+        jLabel1.setText("Level n:");
+
+        label_level_n.setText("0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(93, 93, 93)
-                .addComponent(jLabel2)
-                .addGap(110, 110, 110))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(checkbox_show_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(checkbox_show_grid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(checkbox_show_curve, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(level_slider, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.CENTER)
+                        .addComponent(jLabel1)
+                        .addGap(203, 203, 203))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(button_loadImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(checkbox_show_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(checkbox_show_grid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(checkbox_show_curve, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(label_level_n)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(button_loadImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(level_slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(label_level_n))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(button_clear)
@@ -277,10 +277,10 @@ public class GraphicFitting extends javax.swing.JFrame {
                     .addComponent(checkbox_show_curve))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button_calculate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(103, 103, 103)
+                .addGap(0, 0, 0)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -360,36 +360,22 @@ public class GraphicFitting extends javax.swing.JFrame {
         }
         DFT.transform();
         DFT.showTransform();
-        ArrayList<Complex> coefficients = DFT.getCoeffs();
-
-        for (int i = 0; i < DFT.getN(); i++) {
-            Complex coeff = coefficients.get(i);
-            coefficients_table.setValueAt(coeff.re(), i, 1);
-            coefficients_table.setValueAt(coeff.im(), i, 2);
-            coefficients_table.setValueAt(coeff, i, 3);
-        }
-        // now we get N coefficients for N samples.
-        // this makes n actually useless.
-        // new algorithm might deal with this later.
-        // now we have to manually set n to N
-
-        /*for (int i = 0; i < n; i++) {
-         coefficients_table.setValueAt(coef[i].re(), i, 1);
-         coefficients_table.setValueAt(coef[i].im(), i, 2);
-         coefficients_table.setValueAt(coef[i], i, 3);
-         }*/
+        
+        coef = DFT.getCoeffs().toArray(new Complex[0]);
+        
+        updateCoef();
         repaint();
     }//GEN-LAST:event_button_calculateActionPerformed
 
-    private void level_sliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_level_sliderStateChanged
+    private void updateCoef() {
         // TODO add your handling code here:
-        n = level_slider.getValue();
+        n = coef.length;
         Object model[][] = new Object[n][4];
         for (int i = 0; i < n; i++) {
             model[i][0] = i;
-            model[i][1] = 0.0;
-            model[i][2] = 0.0;
-            model[i][3] = new Complex(0, 0);
+            model[i][1] = coef[i].re();
+            model[i][2] = coef[i].im();
+            model[i][3] = coef[i];
         }
         coefficients_table.setModel(new javax.swing.table.DefaultTableModel(
                 model,
@@ -417,13 +403,9 @@ public class GraphicFitting extends javax.swing.JFrame {
         coefficients_table.getColumnModel().getColumn(3).setWidth(ComplexIconRenderer.SIZE);
         coefficients_table.getColumnModel().getColumn(3).setCellEditor(editor);
         coefficients_table.getColumnModel().getColumn(3).setCellRenderer(renderer);
-
-        coef = new Complex[n];
-        for (int i = 0; i < n; i++) {
-            coef[i] = new Complex(0, 0);
-        }
-    }//GEN-LAST:event_level_sliderStateChanged
-
+        
+        label_level_n.setText("" + n);
+    }     
     /**
      * @param args the command line arguments
      */
@@ -475,7 +457,7 @@ public class GraphicFitting extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JSlider level_slider;
+    private javax.swing.JLabel label_level_n;
     // End of variables declaration//GEN-END:variables
 
     private class FourierCanvas extends javax.swing.JPanel
