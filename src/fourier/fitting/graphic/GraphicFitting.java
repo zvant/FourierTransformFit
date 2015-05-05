@@ -128,7 +128,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         jPanel2.setPreferredSize(new java.awt.Dimension(270, 600));
 
         level_slider.setMajorTickSpacing(1);
-        level_slider.setMaximum(10);
+        level_slider.setMaximum(30);
         level_slider.setMinimum(2);
         level_slider.setPaintLabels(true);
         level_slider.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -247,9 +247,8 @@ public class GraphicFitting extends javax.swing.JFrame {
                             .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(checkbox_show_curve, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.CENTER, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(level_slider, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                        .addComponent(jLabel1))
+                    .addComponent(level_slider, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.CENTER)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -273,8 +272,8 @@ public class GraphicFitting extends javax.swing.JFrame {
                     .addComponent(jCheckBox4)
                     .addComponent(checkbox_show_image))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(checkbox_show_grid)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(checkbox_show_grid, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(checkbox_show_curve))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button_calculate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -352,35 +351,33 @@ public class GraphicFitting extends javax.swing.JFrame {
         //TODO ADD CODE Here
         //coef[0] = new Complex(0.5, 1);
         //coef[1] = new Complex(0.25, 0.1);
-    	
+
         FourierTransform DFT = new FourierTransform();
         System.out.println("fitting for samples: " + sample_points.size());
-        
-        for(Point2D sample : sample_points)
-        {
-        	DFT.addSample(new Complex(sample.getX(), -1 * sample.getY()));
+
+        for (Point2D sample : sample_points) {
+            DFT.addSample(new Complex(sample.getX(), -1 * sample.getY()));
         }
         DFT.transform();
         DFT.showTransform();
         ArrayList<Complex> coefficients = DFT.getCoeffs();
-        
-        for(int i = 0; i < DFT.getN(); i ++)
-        {
-        	Complex coeff = coefficients.get(i);
-        	coefficients_table.setValueAt(coeff.re(), i, 1);
-        	coefficients_table.setValueAt(coeff.im(), i, 2);
-        	coefficients_table.setValueAt(coeff, i, 3);
+
+        for (int i = 0; i < DFT.getN(); i++) {
+            Complex coeff = coefficients.get(i);
+            coefficients_table.setValueAt(coeff.re(), i, 1);
+            coefficients_table.setValueAt(coeff.im(), i, 2);
+            coefficients_table.setValueAt(coeff, i, 3);
         }
         // now we get N coefficients for N samples.
         // this makes n actually useless.
         // new algorithm might deal with this later.
         // now we have to manually set n to N
-        
+
         /*for (int i = 0; i < n; i++) {
-            coefficients_table.setValueAt(coef[i].re(), i, 1);
-            coefficients_table.setValueAt(coef[i].im(), i, 2);
-            coefficients_table.setValueAt(coef[i], i, 3);
-        }*/
+         coefficients_table.setValueAt(coef[i].re(), i, 1);
+         coefficients_table.setValueAt(coef[i].im(), i, 2);
+         coefficients_table.setValueAt(coef[i], i, 3);
+         }*/
         repaint();
     }//GEN-LAST:event_button_calculateActionPerformed
 
@@ -560,11 +557,12 @@ public class GraphicFitting extends javax.swing.JFrame {
             //System.out.println(show_curve);
             if (show_curve) {
                 ArrayList<Point2D> curve = new ArrayList();
-                for (double t = 0; t < 2 * Math.PI; t += Math.PI / 100) {
+                for (double t = 0; t < 2 * Math.PI; t += Math.PI / (100 * n)) {
                     double x = 0, y = 0;
                     for (int i = 0; i < n; i++) {
-                        x += coef[i].re() * Math.cos(i * t) - coef[i].im() * Math.sin(i * t);
-                        y += coef[i].im() * Math.cos(i * t) + coef[i].re() * Math.sin(i * t);
+                        int f = (i > n - i) ? (-n + i) : i;
+                        x += coef[i].re() * Math.cos(f * t) - coef[i].im() * Math.sin(f * t);
+                        y += coef[i].im() * Math.cos(f * t) + coef[i].re() * Math.sin(f * t);
                     }
                     Point2D tp = trans.transform(new Point2D.Double(x, -y), null);
                     //System.out.println(tp.getX() + " " + tp.getY());
@@ -699,11 +697,11 @@ public class GraphicFitting extends javax.swing.JFrame {
             this.highlight = false;
             editor = null;
         }
-        
-        public ComplexIconRenderer(ComplexIconEditor edit){
+
+        public ComplexIconRenderer(ComplexIconEditor edit) {
             super();
-            value = new Complex(0,0);
-            this.setSize(SIZE,SIZE);
+            value = new Complex(0, 0);
+            this.setSize(SIZE, SIZE);
             this.highlight = true;
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
@@ -748,7 +746,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             return this;
         }
 
-        private void update_value(MouseEvent me){
+        private void update_value(MouseEvent me) {
             if (highlight) {
                 //System.out.println("ha");
                 double re = (double) me.getX() / SIZE * 2 - 1;
@@ -756,10 +754,11 @@ public class GraphicFitting extends javax.swing.JFrame {
                 value = new Complex(re, im);
                 //System.out.println(value);
                 editor.stopCellEditing();   /*Tell the editor to accept current value*/
+
                 repaint();
             }
         }
-        
+
         public void mouseClicked(MouseEvent me) {
         }
 
@@ -792,7 +791,7 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         public ComplexIconEditor() {
             super();
-            
+
         }
 
         public Object getCellEditorValue() {
@@ -828,6 +827,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         public void tableChanged(TableModelEvent tme) {
             TableModel model = (TableModel) tme.getSource();
             model.removeTableModelListener(this); /*Remove temporarily to prevent recursive event*/
+
             if (tme.getColumn() == 1 || tme.getColumn() == 2) {
                 for (int i = tme.getFirstRow(); i <= tme.getLastRow(); i++) {
                     Object RV = model.getValueAt(i, 1);
