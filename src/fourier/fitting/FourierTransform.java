@@ -2,7 +2,6 @@ package fourier.fitting;
 
 import fourier.fitting.Complex;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -11,9 +10,6 @@ import java.util.ArrayList;
  */
 public class FourierTransform
 {
-	//private static int MAX = 11;
-	//private double[] coefficients = new double[MAX];
-	//private int up_limit;
 	private ArrayList<Complex> sample_points;
 	private ArrayList<Complex> coefficients;
 	private int N;
@@ -54,6 +50,7 @@ public class FourierTransform
 	public void showTransform()
 	{
 		System.out.println("DFT for N = " + N);
+		
 		System.out.println("Original Points:");
 		for(Complex zn : sample_points)
 			System.out.print(zn.toString() + ", ");
@@ -65,18 +62,9 @@ public class FourierTransform
 		System.out.println("\n");
 	}
 	
-	public ArrayList<Complex> getSamples()
-	{
-		return sample_points;
-	}
+	public ArrayList<Complex> getSamples() { return sample_points; }
 	
-	public ArrayList<Complex> getCoeffs()
-	{
-		return coefficients;
-	}
+	public ArrayList<Complex> getCoeffs() { return coefficients; }
 	
-	public int getN()
-	{
-		return N;
-	}
+	public int getN() { return N; }
 }
