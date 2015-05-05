@@ -53,13 +53,16 @@ public class FourierTransform
 	// display the sample and result to stdout:
 	public void showTransform()
 	{
-		System.out.println("\nOriginal Points:");
+		System.out.println("DFT for N = " + N);
+		System.out.println("Original Points:");
 		for(Complex zn : sample_points)
 			System.out.print(zn.toString() + ", ");
+		System.out.println("\n");
 		
-		System.out.println("\nTransformed Points:");
+		System.out.println("Transformed Points:");
 		for(Complex zk : coefficients)
 			System.out.print(zk.toString() + ", ");
+		System.out.println("\n");
 	}
 	
 	public ArrayList<Complex> getSamples()

@@ -6,6 +6,8 @@
 package fourier.fitting.graphic;
 
 import fourier.fitting.Complex;
+import fourier.fitting.FourierTransform;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -348,15 +350,37 @@ public class GraphicFitting extends javax.swing.JFrame {
 
     private void button_calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_calculateActionPerformed
         //TODO ADD CODE Here
-        coef[0] = new Complex(0.5, 1);
-        coef[1] = new Complex(0.25, 0.1);
+        //coef[0] = new Complex(0.5, 1);
+        //coef[1] = new Complex(0.25, 0.1);
+    	
+        FourierTransform DFT = new FourierTransform();
+        System.out.println("fitting for samples: " + sample_points.size());
         
-        //Ends here
-        for (int i = 0; i < n; i++) {
+        for(Point2D sample : sample_points)
+        {
+        	DFT.addSample(new Complex(sample.getX(), -1 * sample.getY()));
+        }
+        DFT.transform();
+        DFT.showTransform();
+        ArrayList<Complex> coefficients = DFT.getCoeffs();
+        
+        for(int i = 0; i < DFT.getN(); i ++)
+        {
+        	Complex coeff = coefficients.get(i);
+        	coefficients_table.setValueAt(coeff.re(), i, 1);
+        	coefficients_table.setValueAt(coeff.im(), i, 2);
+        	coefficients_table.setValueAt(coeff, i, 3);
+        }
+        // now we get N coefficients for N samples.
+        // this makes n actually useless.
+        // new algorithm might deal with this later.
+        // now we have to manually set n to N
+        
+        /*for (int i = 0; i < n; i++) {
             coefficients_table.setValueAt(coef[i].re(), i, 1);
             coefficients_table.setValueAt(coef[i].im(), i, 2);
             coefficients_table.setValueAt(coef[i], i, 3);
-        }
+        }*/
         repaint();
     }//GEN-LAST:event_button_calculateActionPerformed
 
