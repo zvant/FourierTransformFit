@@ -345,9 +345,11 @@ public class GraphicFitting extends javax.swing.JFrame {
     }//GEN-LAST:event_button_clearActionPerformed
 
     private void button_calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_calculateActionPerformed
-        // TODO add your handling code here:
+        //TODO ADD CODE Here
         coef[0] = new Complex(0.5, 1);
         coef[1] = new Complex(0.25, 0.1);
+        
+        //Ends here
         for (int i = 0; i < n; i++) {
             coefficients_table.setValueAt(coef[i].re(), i, 1);
             coefficients_table.setValueAt(coef[i].im(), i, 2);
