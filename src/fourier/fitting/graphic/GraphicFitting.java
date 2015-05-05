@@ -20,6 +20,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -646,6 +648,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             trans.setToIdentity();
             trans.translate(getWidth() / 2.0, getHeight() / 2.0);
             trans.scale(SCALE, SCALE);
+            repaint();
         }
 
         public void componentMoved(ComponentEvent ce) {
