@@ -14,7 +14,10 @@ public class FourierTransform
 	private ArrayList<Complex> coefficients;
 	private int N;
 	
-	public FourierTransform()
+    /**
+     *
+     */
+    public FourierTransform()
 	{
 		N = 0;
 		sample_points = new ArrayList<Complex>();
@@ -22,14 +25,23 @@ public class FourierTransform
 	}
 	
 	// add a sample complex
-	public void addSample(Complex z)
+
+    /**
+     *
+     * @param z
+     */
+    	public void addSample(Complex z)
 	{
 		sample_points.add(z);
 		N ++;
 	}
 	
 	// do the Discrete Fourier Transformation (DFT):
-	public void transform()
+
+    /**
+     *
+     */
+    	public void transform()
 	{
 		Complex I = new Complex(0.0, 1.0);
 		for(int n = 0; n < N; n ++)
@@ -47,7 +59,11 @@ public class FourierTransform
 	}
 	
 	// display the sample and result to stdout:
-	public void showTransform()
+
+    /**
+     *
+     */
+    	public void showTransform()
 	{
 		System.out.println("DFT for N = " + N);
 		
@@ -62,9 +78,21 @@ public class FourierTransform
 		System.out.println("\n");
 	}
 	
-	public ArrayList<Complex> getSamples() { return sample_points; }
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Complex> getSamples() { return sample_points; }
 	
-	public ArrayList<Complex> getCoeffs() { return coefficients; }
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Complex> getCoeffs() { return coefficients; }
 	
-	public int getN() { return N; }
+    /**
+     *
+     * @return
+     */
+    public int getN() { return N; }
 }

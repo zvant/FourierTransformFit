@@ -65,6 +65,10 @@ public class GraphicFitting extends javax.swing.JFrame {
     private int dragging = -1;
 
     private Complex[] coef = new Complex[]{new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)};
+
+    /**
+     *
+     */
     public static final double SCALE = 100;
     private int n = 2;
 
@@ -103,6 +107,10 @@ public class GraphicFitting extends javax.swing.JFrame {
         checkbox_show_animation = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         label_level_n = new javax.swing.JLabel();
+        button_auto_order = new javax.swing.JButton();
+        button_manual_order = new javax.swing.JButton();
+        button_symmetrize_x = new javax.swing.JButton();
+        button_symmetrize_y = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fourier Transform");
@@ -218,6 +226,24 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         label_level_n.setText("0");
 
+        button_auto_order.setText("Auto Order");
+
+        button_manual_order.setText("Manual Order");
+
+        button_symmetrize_x.setText("Symmetrize(x)");
+        button_symmetrize_x.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_symmetrize_xActionPerformed(evt);
+            }
+        });
+
+        button_symmetrize_y.setText("Symmetrize(y)");
+        button_symmetrize_y.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_symmetrize_yActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -225,24 +251,12 @@ public class GraphicFitting extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel2)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(label_level_n, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(button_loadImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(label_level_n, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(checkbox_show_image, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
@@ -251,7 +265,28 @@ public class GraphicFitting extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(checkbox_show_animation)
                                     .addComponent(checkbox_show_curve, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(4, 4, 4)))))
+                                .addGap(4, 4, 4))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(button_clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(button_loadImage, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(button_calculate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(button_auto_order, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(button_symmetrize_x, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(button_symmetrize_y, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(button_manual_order, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(20, 20, 20))
         );
         jPanel2Layout.setVerticalGroup(
@@ -273,13 +308,21 @@ public class GraphicFitting extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(checkbox_show_grid)
                     .addComponent(checkbox_show_curve))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(button_calculate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(button_calculate)
+                .addGap(11, 11, 11)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_auto_order)
+                    .addComponent(button_manual_order))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_symmetrize_x)
+                    .addComponent(button_symmetrize_y))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jScrollPane3.setViewportView(jPanel2);
@@ -367,6 +410,94 @@ public class GraphicFitting extends javax.swing.JFrame {
         canvas.repaint();
     }//GEN-LAST:event_button_calculateActionPerformed
 
+    private void button_symmetrize_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_symmetrize_xActionPerformed
+        // TODO add your handling code here:
+        symmetrize(Math.PI / 2);
+        updateCoef();
+        canvas.repaint();
+    }//GEN-LAST:event_button_symmetrize_xActionPerformed
+
+    private void button_symmetrize_yActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_symmetrize_yActionPerformed
+        // TODO add your handling code here:
+        symmetrize(0);
+        updateCoef();
+        canvas.repaint();
+    }//GEN-LAST:event_button_symmetrize_yActionPerformed
+
+    /**
+     * Evaluate the Fourier series at time t
+     */
+    private Complex evaluateFourier(double t, boolean zeroth) {
+
+        Complex sum = new Complex(0, 0);
+        for (int i = 1; i < n; i++) {
+            int f = (i > n - i) ? (-n + i) : i;
+            sum = sum.plus(coef[i].times(Complex.fromPolar(1, f * t)));
+        }
+        if (zeroth && n > 0) {
+            sum = sum.plus(coef[0]);
+        }
+        return sum;
+    }
+
+    /**
+     * Symmetrize along polar angle `angle`
+     */
+    private void symmetrize(double angle) {
+        int resolution = 100;
+        Complex r = Complex.fromPolar(1, angle), p = new Complex(0, 0), q = new Complex(0, 0);
+        boolean found = false;
+        double t = 0, delta = 0;
+        while (resolution < 2000) {
+            delta = 2 * Math.PI / resolution;
+            p = evaluateFourier(0, false);
+            for (t = delta; t <= 2 * Math.PI; t += delta) {
+                q = evaluateFourier(t, false);
+                if (p.divides(r).im() * q.divides(r).im() <= 0) {
+                    /*Crossing found*/
+                    found = true;
+                    break;
+                }
+                p = q;
+            }
+            if (found) {
+                break;
+            }
+            resolution *= 2;
+        }
+        if (!found) {
+            /*Failed. Do nothing*/
+            System.err.println("Symmetrization failed.");
+            return;
+        }
+
+        System.out.println("PQ " + p + " " + q + " " + r);
+        // Now execute the  binary search
+        double tl = t - delta, tr = t;
+        while (p.minus(q).abs() > 1e-6) {
+            t = (tr + tl) / 2;
+            Complex mid = evaluateFourier(t, false);
+            if (mid.divides(r).im() * p.divides(r).im() <= 0) {
+                tr = t;
+                q = mid;
+            } else {
+                tl = t;
+                p = mid;
+            }
+            System.out.println("BS " + tl + " " + tr + " " + mid);
+        }
+        System.out.println(t + " " + p + " " + q);
+        // Now, at time t we are sure the vector points to the desired angle
+        for (int i = 1; i < n; i++) {
+            int f = (i > n - i) ? (-n + i) : i;
+            // We redefine this as t=0, and therefore there comes up this new phase
+            coef[i] = coef[i].times(Complex.fromPolar(1, t * f + (angle - Math.PI / 2)));
+            // Now, from the symmetry it is required that the real part must be zero
+            coef[i] = new Complex(0, coef[i].im()).times(Complex.fromPolar(1, Math.PI / 2 - angle));
+        }
+        //System.out.println(evaluateFourier(0,false));
+    }
+
     private void updateCoef() {
         // TODO add your handling code here:
         n = coef.length;
@@ -443,9 +574,13 @@ public class GraphicFitting extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton button_auto_order;
     private javax.swing.JButton button_calculate;
     private javax.swing.JButton button_clear;
     private javax.swing.JButton button_loadImage;
+    private javax.swing.JButton button_manual_order;
+    private javax.swing.JButton button_symmetrize_x;
+    private javax.swing.JButton button_symmetrize_y;
     private javax.swing.JPanel canvas;
     private javax.swing.JCheckBox checkbox_show_animation;
     private javax.swing.JCheckBox checkbox_show_curve;
@@ -521,10 +656,11 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
 
             g2.setStroke(new BasicStroke());
-            g2.setColor(Color.red);
+            g2.setFont(g2.getFont().deriveFont(5));
             for (int i = 0; i < sample_points.size(); i++) {
                 Point2D p = sample_points.get(i);
                 Point2D tp = trans.transform(p, null);
+                g2.setColor(Color.red);
                 if (highlight == i) {
                     g2.fill(new Ellipse2D.Double(
                             tp.getX() - 4,
@@ -538,6 +674,8 @@ public class GraphicFitting extends javax.swing.JFrame {
                             4, 4)
                     );
                 }
+                g2.setColor(Color.black);
+                g2.drawString("" + i, (int) tp.getX() - 5, (int) tp.getY() - 5);
             }
 
             g2.setColor(Color.blue);
@@ -545,13 +683,13 @@ public class GraphicFitting extends javax.swing.JFrame {
             if (show_curve) {
                 ArrayList<Point2D> curve = new ArrayList();
                 for (double t = 0; t < 2 * Math.PI; t += Math.PI / Math.min(100 * n, 1500)) {
-                    double x = 0, y = 0;
-                    for (int i = 0; i < n; i++) {
-                        int f = (i > n - i) ? (-n + i) : i;
-                        x += coef[i].re() * Math.cos(f * t) - coef[i].im() * Math.sin(f * t);
-                        y += coef[i].im() * Math.cos(f * t) + coef[i].re() * Math.sin(f * t);
-                    }
-                    Point2D tp = trans.transform(new Point2D.Double(x, -y), null);
+//                    double x = 0, y = 0;
+//                    for (int i = 0; i < n; i++) {
+//                        int f = (i > n - i) ? (-n + i) : i;
+//                        x += coef[i].re() * Math.cos(f * t) - coef[i].im() * Math.sin(f * t);
+//                        y += coef[i].im() * Math.cos(f * t) + coef[i].re() * Math.sin(f * t);
+//                    }
+                    Point2D tp = trans.transform(evaluateFourier(t, true).conjugate().getPoint(), null);
                     //System.out.println(tp.getX() + " " + tp.getY());
                     curve.add(tp);
                 }
@@ -568,7 +706,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                     Point2D lt = new Point2D.Double(current.re() - radius, -current.im() - radius);
                     Point2D rb = new Point2D.Double(current.re() + radius, -current.im() + radius);
                     Point2D center = current.conjugate().getPoint();
-                    double phase = i*time + coef[i].phase();
+                    double phase = i * time + coef[i].phase();
                     current = current.plus(Complex.fromPolar(radius, phase));
                     Point2D endpoint = current.conjugate().getPoint();
                     trans.transform(lt, lt);
@@ -584,11 +722,11 @@ public class GraphicFitting extends javax.swing.JFrame {
 
                     /*Level N-i === -i*/
                     if (i * 2 != n) {
-                        radius = coef[n-i].abs();
+                        radius = coef[n - i].abs();
                         lt = new Point2D.Double(current.re() - radius, -current.im() - radius);
                         rb = new Point2D.Double(current.re() + radius, -current.im() + radius);
                         center = current.conjugate().getPoint();
-                        phase = -i*time + coef[n-i].phase();
+                        phase = -i * time + coef[n - i].phase();
                         current = current.plus(Complex.fromPolar(radius, phase));
                         endpoint = current.conjugate().getPoint();
                         trans.transform(lt, lt);
