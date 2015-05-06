@@ -18,7 +18,7 @@ public class FourierTransform
 	private int N;
 	
     /**
-     *
+     * Initiate a transformation
      */
     public FourierTransform()
 	{
@@ -28,11 +28,10 @@ public class FourierTransform
 		coefficients = new ArrayList<Complex>();
 	}
 	
-	// add a sample complex
 
     /**
-     *
-     * @param z
+     * Add a new sample to the transformation
+     * @param z a new sample point
      */
     public void addSample(Complex z)
 	{
@@ -40,10 +39,9 @@ public class FourierTransform
 		N ++;
 	}
 	
-	// do the Discrete Fourier Transformation (DFT):
 
     /**
-     *
+     * transformation that generates coefficients
      */
     public void transform()
 	{
@@ -63,15 +61,11 @@ public class FourierTransform
 		}
 	}
     
-    // re-order the sample points to get better performance
-    
     /**
-     * 
+     * sort the sample points to get better performance
      */
     public void reOrder()
     {
-    	//ArrayList<Complex> tmp = new ArrayList<Complex>();
-
     	for(Complex zk : sample_points)
     	{
     		center = Complex.plus(center, zk);
@@ -90,11 +84,9 @@ public class FourierTransform
 			return (int)(diff * 2000);
 		}
 	}
-	
-	// display the sample and result to stdout:
 
     /**
-     *
+     * display the sample and result to stdout
      */
     public void showTransform()
 	{
@@ -113,19 +105,19 @@ public class FourierTransform
 	
     /**
      *
-     * @return
+     * @return ArrayList of sample complex numbers
      */
     public ArrayList<Complex> getSamples() { return sample_points; }
 	
     /**
      *
-     * @return
+     * @return ArrayList of coefficient complex numbers
      */
     public ArrayList<Complex> getCoeffs() { return coefficients; }
 	
     /**
      *
-     * @return
+     * @return number of samples as well as coefficients
      */
     public int getN() { return N; }
 }
