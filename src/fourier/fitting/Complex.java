@@ -19,8 +19,8 @@ public class Complex {
 
     /**
      *
-     * @param real
-     * @param imag
+     * @param real real part
+     * @param imag imaginary part
      */
     public Complex(double real, double imag) {
         re = real;
@@ -38,7 +38,7 @@ public class Complex {
 
     /**
      *
-     * @return
+     * @return a description string
      */
     @Override
     public String toString() {
@@ -61,26 +61,25 @@ public class Complex {
 
     /**
      *
-     * @return
+     * @return absolute value
      */
     public double abs() {
         return Math.hypot(re, im);
-    } // Math.sqrt(re*re + im*im)
+    }
 
     /**
      *
-     * @return
+     * @return Arg(this), between -PI and PI
      */
     public double phase() {
         return Math.atan2(im, re);
-    } // between -pi and pi
+    }
 
-    // plus methods:
 
     /**
      *
-     * @param b
-     * @return
+     * @param b complex
+     * @return this + b
      */
         public Complex plus(Complex b) {
         return new Complex(this.re + b.re, this.im + b.im);
@@ -88,20 +87,18 @@ public class Complex {
 
     /**
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a complex
+     * @param b complex
+     * @return a + b
      */
     public static Complex plus(Complex a, Complex b) {
         return a.plus(b);
     }
 
-    // minus methods:
-
     /**
      *
-     * @param b
-     * @return
+     * @param b complex
+     * @return this - b
      */
         public Complex minus(Complex b) {
         return new Complex(this.re - b.re, this.im - b.im);
@@ -109,20 +106,18 @@ public class Complex {
 
     /**
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a complex
+     * @param b complex
+     * @return a - b
      */
     public static Complex minus(Complex a, Complex b) {
         return a.minus(b);
     }
 
-    // times methods:
-
     /**
      *
-     * @param b
-     * @return
+     * @param b complex
+     * @return this * b
      */
         public Complex times(Complex b) {
         return new Complex(
@@ -133,9 +128,9 @@ public class Complex {
 
     /**
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a complex
+     * @param b complex
+     * @return a * b
      */
     public static Complex times(Complex a, Complex b) {
         return a.times(b);
@@ -143,8 +138,8 @@ public class Complex {
 
     /**
      *
-     * @param alpha
-     * @return
+     * @param alpha real
+     * @return this * alpha
      */
     public Complex times(double alpha) {
         return new Complex(this.re * alpha, this.im * alpha);
@@ -152,9 +147,9 @@ public class Complex {
 
     /**
      *
-     * @param z
-     * @param alpha
-     * @return
+     * @param z complex
+     * @param alpha real
+     * @return z * alpha
      */
     public static Complex times(Complex z, double alpha) {
         return z.times(alpha);
@@ -162,20 +157,18 @@ public class Complex {
 
     /**
      *
-     * @param alpha
-     * @param z
-     * @return
+     * @param alpha real
+     * @param z complex
+     * @return z * alpha
      */
-    public static Complex times(Double alpha, Complex z) {
+    public static Complex times(double alpha, Complex z) {
         return z.times(alpha);
     }
 
-    // divides methods:
-
     /**
      *
-     * @param b
-     * @return
+     * @param b complex
+     * @return this / b
      */
         public Complex divides(Complex b) {
         return this.times(b.reciprocal());
@@ -183,9 +176,9 @@ public class Complex {
 
     /**
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a complex
+     * @param b complex
+     * @return a / b
      */
     public static Complex divides(Complex a, Complex b) {
         return a.times(b.reciprocal());
@@ -193,8 +186,8 @@ public class Complex {
 
     /**
      *
-     * @param alpha
-     * @return
+     * @param alpha real
+     * @return this / alpha
      */
     public Complex divides(double alpha) {
         return new Complex(re / alpha, im / alpha);
@@ -202,9 +195,9 @@ public class Complex {
 
     /**
      *
-     * @param z
-     * @param alpha
-     * @return
+     * @param z complex
+     * @param alpha real
+     * @return z / alpha
      */
     public static Complex divides(Complex z, double alpha) {
         return new Complex(z.re / alpha, z.im / alpha);
@@ -212,29 +205,25 @@ public class Complex {
 
     /**
      *
-     * @param alpha
-     * @param z
-     * @return
+     * @param alpha real
+     * @param z complex
+     * @return alpha / z
      */
-    public static Complex divides(Double alpha, Complex z) {
+    public static Complex divides(double alpha, Complex z) {
         return new Complex(alpha, 0.0).divides(z);
     }
 
-    // conjugate:
-
     /**
      *
-     * @return
+     * @return conjugation complex number
      */
         public Complex conjugate() {
         return new Complex(re, -im);
     }
 
-    // reciprocal:
-
     /**
      *
-     * @return
+     * @return complex reciprocal
      */
         public Complex reciprocal() {
         double scale = re * re + im * im;
@@ -243,7 +232,7 @@ public class Complex {
 
     /**
      *
-     * @return
+     * @return real part
      */
     public double re() {
         return re;
@@ -251,17 +240,15 @@ public class Complex {
 
     /**
      *
-     * @return
+     * @return imaginary part
      */
     public double im() {
         return im;
     }
-
-    // complex exponential e^z:
-
+    
     /**
      *
-     * @return
+     * @return complex exponential
      */
         public Complex exp() {
         return new Complex(Math.exp(re) * Math.cos(im), Math.exp(re) * Math.sin(im));
@@ -270,17 +257,15 @@ public class Complex {
     /**
      *
      * @param z
-     * @return
+     * @return complex exponential
      */
     public static Complex exp(Complex z) {
         return z.exp();
     }
 
-    // complex sine:
-
     /**
      *
-     * @return
+     * @return complex sine
      */
         public Complex sin() {
         return new Complex(Math.sin(re) * Math.cosh(im), Math.cos(re) * Math.sinh(im));
@@ -289,17 +274,15 @@ public class Complex {
     /**
      *
      * @param z
-     * @return
+     * @return complex sine
      */
     public static Complex sin(Complex z) {
         return z.sin();
     }
 
-    // complex cosine:
-
     /**
      *
-     * @return
+     * @return complex cosine
      */
         public Complex cos() {
         return new Complex(Math.cos(re) * Math.cosh(im), -Math.sin(re) * Math.sinh(im));
@@ -308,17 +291,15 @@ public class Complex {
     /**
      *
      * @param z
-     * @return
+     * @return complex cosine
      */
     public static Complex cos(Complex z) {
         return z.cos();
     }
 
-    // complex tangent:
-
     /**
      *
-     * @return
+     * @return complex tangent
      */
         public Complex tan() {
         return sin().divides(cos());
@@ -327,7 +308,7 @@ public class Complex {
     /**
      *
      * @param z
-     * @return
+     * @return complex tangent
      */
     public static Complex tan(Complex z) {
         return z.tan();
@@ -335,7 +316,7 @@ public class Complex {
 
     /**
      *
-     * @return
+     * @return <i>java.awt.geom.Point2D</i> Point
      */
     public Point2D getPoint() {
         return new Point2D.Double(re, im);
@@ -343,8 +324,8 @@ public class Complex {
 
     /**
      *
-     * @param r
-     * @param phi
+     * @param r modulus
+     * @param phi argument
      * @return
      */
     public static Complex fromPolar(double r, double phi) {
