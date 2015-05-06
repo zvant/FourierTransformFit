@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.lang.Math;
 
 /**
- *
+ * Complex number class
  * @author caoyuan9642
  */
 public class Complex {
