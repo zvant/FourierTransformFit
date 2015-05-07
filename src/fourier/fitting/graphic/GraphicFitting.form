@@ -35,9 +35,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="canvas" max="32767" attributes="0"/>
+              <Component id="canvas" pref="585" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane3" min="-2" max="-2" attributes="0"/>
+              <Component id="jScrollPane3" min="-2" pref="267" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -73,7 +73,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="585" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -110,22 +110,18 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="label_level_n" max="32767" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="checkbox_show_image" alignment="0" pref="87" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="button_clear" linkSize="1" min="-2" pref="119" max="-2" attributes="0"/>
+                                          <Component id="checkbox_show_image" alignment="0" max="32767" attributes="0"/>
                                           <Component id="checkbox_show_grid" alignment="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="checkbox_show_animation" min="-2" max="-2" attributes="0"/>
                                           <Component id="checkbox_show_curve" min="-2" pref="101" max="-2" attributes="0"/>
+                                          <Component id="button_loadImage" linkSize="1" pref="113" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="button_clear" max="32767" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="button_loadImage" min="-2" pref="102" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -143,13 +139,13 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="button_auto_order" max="32767" attributes="0"/>
-                                  <Component id="button_symmetrize_x" pref="0" max="32767" attributes="0"/>
+                                  <Component id="button_symmetrize_x" linkSize="1" min="-2" pref="116" max="-2" attributes="0"/>
+                                  <Component id="button_auto_order" linkSize="1" min="-2" pref="116" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="button_symmetrize_y" max="32767" attributes="0"/>
-                                  <Component id="button_manual_order" max="32767" attributes="0"/>
+                                  <Component id="button_symmetrize_y" linkSize="1" max="32767" attributes="0"/>
+                                  <Component id="button_manual_order" linkSize="1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -221,7 +217,7 @@
                         <Column editable="false" title="n" type="java.lang.Integer"/>
                         <Column editable="true" title="Re" type="java.lang.Double"/>
                         <Column editable="true" title="Im" type="java.lang.Double"/>
-                        <Column editable="true" title="Complex" type="java.lang.Object"/>
+                        <Column editable="true" title="" type="java.lang.Object"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -241,7 +237,7 @@
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="32" resizable="false">
+                        <Column maxWidth="32" minWidth="32" prefWidth="32" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
