@@ -23,8 +23,8 @@ public class FourierTransform {
     public FourierTransform() {
         N = 0;
         center = new Complex(0.0, 0.0);
-        sample_points = new ArrayList<Complex>();
-        coefficients = new ArrayList<Complex>();
+        sample_points = new ArrayList<>();
+        coefficients = new ArrayList<>();
     }
 
     /**

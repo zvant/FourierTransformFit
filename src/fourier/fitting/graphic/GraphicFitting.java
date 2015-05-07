@@ -61,7 +61,7 @@ public class GraphicFitting extends javax.swing.JFrame {
     private boolean show_curve = true;
     private boolean show_animation = true;
 
-    private ArrayList<Point2D> sample_points = new ArrayList<Point2D>(); // points to get fitting
+    private ArrayList<Point2D> sample_points = new ArrayList<>(); // points to get fitting
     private int highlight = -1;
     private int dragging = -1;
 
@@ -75,6 +75,8 @@ public class GraphicFitting extends javax.swing.JFrame {
 
     private ComplexIconEditor editor = new ComplexIconEditor();
     private ComplexIconRenderer renderer = new ComplexIconRenderer();
+    private boolean ordering;
+    private int order_index;
 
     /**
      * Creates new form GraphicFitting
@@ -235,6 +237,11 @@ public class GraphicFitting extends javax.swing.JFrame {
         });
 
         button_manual_order.setText("Manual Order");
+        button_manual_order.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_manual_orderActionPerformed(evt);
+            }
+        });
 
         button_symmetrize_x.setText("Symmetrize(x)");
         button_symmetrize_x.addActionListener(new java.awt.event.ActionListener() {
@@ -393,13 +400,12 @@ public class GraphicFitting extends javax.swing.JFrame {
     private void button_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_clearActionPerformed
         // TODO add your handling code here:
         sample_points.clear();
+        ordering = false;
         canvas.repaint();
     }//GEN-LAST:event_button_clearActionPerformed
 
     private void button_calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_calculateActionPerformed
         //TODO ADD CODE Here
-        //coef[0] = new Complex(0.5, 1);
-        //coef[1] = new Complex(0.25, 0.1);
 
         FourierTransform DFT = new FourierTransform();
         System.out.println("fitting for samples: " + sample_points.size());
@@ -435,6 +441,17 @@ public class GraphicFitting extends javax.swing.JFrame {
         reorder();
         canvas.repaint();
     }//GEN-LAST:event_button_auto_orderActionPerformed
+
+    private void button_manual_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_manual_orderActionPerformed
+        // TODO add your handling code here:
+        if (!ordering) {
+            order_index = 0;
+            ordering = true;
+        } else {
+            ordering = false;
+        }
+        canvas.repaint();
+    }//GEN-LAST:event_button_manual_orderActionPerformed
 
     /**
      * Evaluate the Fourier series at time t
@@ -591,10 +608,8 @@ public class GraphicFitting extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GraphicFitting().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new GraphicFitting().setVisible(true);
         });
     }
 
@@ -685,7 +700,11 @@ public class GraphicFitting extends javax.swing.JFrame {
             for (int i = 0; i < sample_points.size(); i++) {
                 Point2D p = sample_points.get(i);
                 Point2D tp = trans.transform(p, null);
-                g2.setColor(Color.red);
+                if (!ordering) {
+                    g2.setColor(Color.red);
+                } else {
+                    g2.setColor(Color.blue);
+                }
                 if (highlight == i) {
                     g2.fill(new Ellipse2D.Double(
                             tp.getX() - 4,
@@ -785,20 +804,30 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         }
 
+        @Override
         public void mouseClicked(MouseEvent e) {
         }
 
         Point2D press_pos;
 
+        @Override
         public void mousePressed(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 if (highlight != -1) {
-                    dragging = highlight;
+                    if (!ordering) {
+                        dragging = highlight;
+                    } else {
+                        Point2D temp = sample_points.get(order_index);
+                        sample_points.set(order_index, sample_points.get(highlight));
+                        sample_points.set(highlight, temp);
+                        highlight = order_index;
+                        ++order_index;
+                    }
                 }
             }
             if (e.getButton() == MouseEvent.BUTTON3) { /*Right click: erase point*/
 
-                if (highlight != -1) {
+                if (highlight != -1 && !ordering) {
                     sample_points.remove(highlight);
                     highlight = -1;
                     dragging = -1;
@@ -807,9 +836,10 @@ public class GraphicFitting extends javax.swing.JFrame {
             repaint();
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1) {
-                if (dragging == -1) { /*Left click: create point*/
+                if (dragging == -1 && !ordering) { /*Left click: create point*/
                     /*Create new point*/
 
                     Point2D newpoint = null;
@@ -822,17 +852,23 @@ public class GraphicFitting extends javax.swing.JFrame {
                     sample_points.add(newpoint);
                 } else {
                     dragging = -1;
+                    if (order_index >= sample_points.size()) {
+                        ordering = false;
+                    }
                 }
             }
             repaint();
         }
 
+        @Override
         public void mouseEntered(MouseEvent e) {
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
         }
 
+        @Override
         public void mouseMoved(MouseEvent e) {
             for (int i = 0; i < sample_points.size(); i++) {
                 Point2D p = sample_points.get(i);
@@ -848,8 +884,9 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         }
 
+        @Override
         public void mouseDragged(MouseEvent e) {
-            if (dragging != -1) {
+            if (dragging != -1 && !ordering) {
                 try {
                     if (dragging < sample_points.size()) {
                         sample_points.set(dragging, trans.inverseTransform(e.getPoint(), null));
@@ -861,6 +898,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         }
 
+        @Override
         public void componentResized(ComponentEvent ce) {
             trans.setToIdentity();
             trans.translate(getWidth() / 2.0, getHeight() / 2.0);
@@ -868,15 +906,19 @@ public class GraphicFitting extends javax.swing.JFrame {
             repaint();
         }
 
+        @Override
         public void componentMoved(ComponentEvent ce) {
         }
 
+        @Override
         public void componentShown(ComponentEvent ce) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent ce) {
         }
 
+        @Override
         public void run() {
             while (true) {
                 try {
