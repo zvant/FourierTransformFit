@@ -332,6 +332,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Auto Order"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_auto_orderActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="button_manual_order">
               <Properties>

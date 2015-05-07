@@ -228,6 +228,11 @@ public class GraphicFitting extends javax.swing.JFrame {
         label_level_n.setText("0");
 
         button_auto_order.setText("Auto Order");
+        button_auto_order.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_auto_orderActionPerformed(evt);
+            }
+        });
 
         button_manual_order.setText("Manual Order");
 
@@ -425,6 +430,12 @@ public class GraphicFitting extends javax.swing.JFrame {
         canvas.repaint();
     }//GEN-LAST:event_button_symmetrize_yActionPerformed
 
+    private void button_auto_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_auto_orderActionPerformed
+        // TODO add your handling code here:
+        reorder();
+        canvas.repaint();
+    }//GEN-LAST:event_button_auto_orderActionPerformed
+
     /**
      * Evaluate the Fourier series at time t
      */
@@ -542,16 +553,16 @@ public class GraphicFitting extends javax.swing.JFrame {
     /**
      * sort the sample points to get better performance
      */
-    public void reOrder()
-    {
-        Point2D center = 
-    	Collections.sort(sample_points, 
-                (p,q)->{
-                    return Math.signum(Math.atan2(p.getY() - center.getY(), p.getX() - center.getX()) - Math.atan2(q.getY() - center.getY(), q.getX() - center.getX()));
+    public void reorder() {
+        Point2D sum = sample_points.stream().reduce(new Point2D.Double(0, 0), (p, q) -> new Point2D.Double(p.getX() + q.getX(), p.getY() + q.getY()));
+        Point2D center = new Point2D.Double(sum.getX() / sample_points.size(), sum.getY() / sample_points.size());
+        sample_points.sort(
+                (p, q) -> {
+                    return (int) Math.signum(Math.atan2(p.getY() - center.getY(), p.getX() - center.getX()) - Math.atan2(q.getY() - center.getY(), q.getX() - center.getX()));
                 }
-        )
+        );
     }
-    
+
     /**
      * @param args the command line arguments
      */
