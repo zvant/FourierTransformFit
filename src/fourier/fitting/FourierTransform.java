@@ -3,13 +3,12 @@ package fourier.fitting;
 import java.util.ArrayList;
 
 /**
- *
+ * Discrete Fourier Transformation
  * @author Zekun Zhang
  */
 public class FourierTransform {
 
     private ArrayList<Complex> sample_points;
-    Complex center;
     private ArrayList<Complex> coefficients;
     private int N;
 
