@@ -61,20 +61,6 @@ public class FourierTransform
 		}
 	}
     
-    /**
-     * sort the sample points to get better performance
-     */
-    public void reOrder()
-    {
-    	for(Complex zk : sample_points)
-    	{
-    		center = Complex.plus(center, zk);
-    	}
-    	center = center.divides(N);
-    	
-    	Collections.sort(sample_points, new PhaseComparator());
-    }
-    
     private class PhaseComparator implements Comparator<Complex>
 	{
 		public int compare(Complex z1, Complex z2)

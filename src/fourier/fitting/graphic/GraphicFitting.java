@@ -35,6 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -538,6 +539,19 @@ public class GraphicFitting extends javax.swing.JFrame {
         label_level_n.setText("" + n);
     }
 
+    /**
+     * sort the sample points to get better performance
+     */
+    public void reOrder()
+    {
+        Point2D center = 
+    	Collections.sort(sample_points, 
+                (p,q)->{
+                    return Math.signum(Math.atan2(p.getY() - center.getY(), p.getX() - center.getX()) - Math.atan2(q.getY() - center.getY(), q.getX() - center.getX()));
+                }
+        )
+    }
+    
     /**
      * @param args the command line arguments
      */
