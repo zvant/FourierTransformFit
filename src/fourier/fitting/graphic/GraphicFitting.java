@@ -11,19 +11,15 @@ import fourier.fitting.FourierTransform;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -35,12 +31,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
@@ -62,15 +56,12 @@ public class GraphicFitting extends javax.swing.JFrame {
     private boolean show_animation = true;
 
     private ArrayList<Point2D> sample_points = new ArrayList<>(); // points to get fitting
-    private int highlight = -1;
-    private int dragging = -1;
 
     private Complex[] coef = new Complex[]{new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)};
 
     /**
      *
      */
-    public static final double SCALE = 100;
     private int n = 2;
 
     private ComplexIconEditor editor = new ComplexIconEditor();
@@ -408,11 +399,9 @@ public class GraphicFitting extends javax.swing.JFrame {
         //TODO ADD CODE Here
 
         FourierTransform DFT = new FourierTransform();
-        System.out.println("fitting for samples: " + sample_points.size());
-
-        for (Point2D sample : sample_points) {
+        sample_points.stream().forEach((sample) -> {
             DFT.addSample(new Complex(sample.getX(), -1 * sample.getY()));
-        }
+        });
         DFT.transform();
         DFT.showTransform();
 
@@ -550,10 +539,12 @@ public class GraphicFitting extends javax.swing.JFrame {
                 false, true, true, true
             };
 
+            @Override
             public Class getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
@@ -637,13 +628,18 @@ public class GraphicFitting extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private class FourierCanvas extends javax.swing.JPanel
-            implements MouseListener, MouseMotionListener, ComponentListener, Runnable {
+            implements MouseListener, MouseMotionListener, ComponentListener, Runnable, MouseWheelListener {
 
         private BufferedImage image;
         private AffineTransform trans;
         private double image_scale;
         private Thread animation_thread;
         private double time;
+        private double scale = 100;
+        private Point2D origin = new Point2D.Double(0, 0);
+        private int highlight = -1;
+        private int dragging = -1;
+        private boolean panning = false;
 
         /**
          * Creates new form FourierCanvas
@@ -652,11 +648,18 @@ public class GraphicFitting extends javax.swing.JFrame {
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
             this.addComponentListener(this);
+            this.addMouseWheelListener(this);
             trans = new AffineTransform();
-            trans.translate(getWidth() / 2.0, getHeight() / 2.0);
-            trans.scale(SCALE, SCALE);
+            updateTransform();
             animation_thread = new Thread(this);
             animation_thread.start();
+        }
+
+        private void updateTransform() {
+            trans.setToIdentity();
+            trans.translate(getWidth() / 2, getHeight() / 2);
+            trans.scale(scale, scale);
+            trans.translate(-origin.getX(), -origin.getY());
         }
 
         @Override
@@ -675,7 +678,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                 //System.out.println(lefttop);
                 trans.transform(lefttop, lefttop);
                 //System.out.println(lefttop);
-                g2.drawImage(image, (int) lefttop.getX(), (int) lefttop.getY(), (int) (image_scale * image.getWidth() * SCALE), (int) (image_scale * image.getHeight() * SCALE), this);
+                g2.drawImage(image, (int) lefttop.getX(), (int) lefttop.getY(), (int) (image_scale * image.getWidth() * scale), (int) (image_scale * image.getHeight() * scale), this);
             }
 
             if (show_grid) {
@@ -799,7 +802,7 @@ public class GraphicFitting extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                image_scale = Math.min((double) this.getWidth() / image.getWidth(), (double) this.getHeight() / image.getHeight()) / SCALE;
+                image_scale = Math.min((double) this.getWidth() / image.getWidth(), (double) this.getHeight() / image.getHeight()) / scale;
                 //System.out.println("scale=" + image_scale);
             }
         }
@@ -808,7 +811,7 @@ public class GraphicFitting extends javax.swing.JFrame {
         public void mouseClicked(MouseEvent e) {
         }
 
-        Point2D press_pos;
+        Point2D last_pos;
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -833,6 +836,10 @@ public class GraphicFitting extends javax.swing.JFrame {
                     dragging = -1;
                 }
             }
+            if (e.getButton() == MouseEvent.BUTTON2) { // Middle click: Pan
+                panning = true;
+                last_pos = e.getPoint();
+            }
             repaint();
         }
 
@@ -856,6 +863,9 @@ public class GraphicFitting extends javax.swing.JFrame {
                         ordering = false;
                     }
                 }
+            }
+            if (e.getButton() == MouseEvent.BUTTON2) {
+                panning = false;
             }
             repaint();
         }
@@ -886,7 +896,7 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            if (dragging != -1 && !ordering) {
+            if (dragging != -1 && !ordering && !panning) {
                 try {
                     if (dragging < sample_points.size()) {
                         sample_points.set(dragging, trans.inverseTransform(e.getPoint(), null));
@@ -896,13 +906,17 @@ public class GraphicFitting extends javax.swing.JFrame {
                 }
                 repaint();
             }
+            if (panning) {
+                origin = new Point2D.Double(origin.getX() - (e.getX() - last_pos.getX()) / scale, origin.getY() - (e.getY() - last_pos.getY()) / scale);
+                updateTransform();
+                last_pos = e.getPoint();
+                repaint();
+            }
         }
 
         @Override
         public void componentResized(ComponentEvent ce) {
-            trans.setToIdentity();
-            trans.translate(getWidth() / 2.0, getHeight() / 2.0);
-            trans.scale(SCALE, SCALE);
+            updateTransform();
             repaint();
         }
 
@@ -928,13 +942,33 @@ public class GraphicFitting extends javax.swing.JFrame {
                 }
                 if (show_animation) {
                     time += 2 * Math.PI / 3000;
-                    this.repaint();
+                    repaint();
                 }
             }
         }
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent mwe) {
+            double scale_change = 1 + mwe.getPreciseWheelRotation() / 8;
+            if (scale_change < 0) {
+                scale_change = 0.1;
+            }
+            scale *= scale_change;
+            Point2D fix = null;
+            try {
+                fix = trans.inverseTransform(mwe.getPoint(), null);
+            } catch (NoninvertibleTransformException ex) {
+                Logger.getLogger(GraphicFitting.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /*This new origin will keep the fixed point unchanged*/
+            origin = new Point2D.Double(origin.getX() * 1 / scale_change + fix.getX() * (1 - 1 / scale_change),
+                    origin.getY() * 1 / scale_change + fix.getY() * (1 - 1 / scale_change));
+            updateTransform();
+            repaint();
+        }
     }
 
-    private class ComplexIconRenderer extends JComponent implements TableCellRenderer, MouseListener, MouseMotionListener {
+    private class ComplexIconRenderer extends JComponent implements TableCellRenderer, MouseListener {
 
         private static final int SIZE = 32;
         private Complex value;
@@ -955,10 +989,10 @@ public class GraphicFitting extends javax.swing.JFrame {
             this.setSize(SIZE, SIZE);
             this.highlight = true;
             this.addMouseListener(this);
-            this.addMouseMotionListener(this);
             editor = edit;
         }
 
+        @Override
         public void paintComponent(Graphics g) {
             //System.out.println("Render");
             Graphics2D g2 = (Graphics2D) g;
@@ -991,6 +1025,7 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         }
 
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             //System.out.println("get Renderer");
             this.value = (Complex) value;
@@ -1010,29 +1045,26 @@ public class GraphicFitting extends javax.swing.JFrame {
             }
         }
 
+        @Override
         public void mouseClicked(MouseEvent me) {
         }
 
+        @Override
         public void mousePressed(MouseEvent me) {
             System.out.println("press");
             update_value(me);
         }
 
+        @Override
         public void mouseReleased(MouseEvent me) {
         }
 
+        @Override
         public void mouseEntered(MouseEvent me) {
         }
 
+        @Override
         public void mouseExited(MouseEvent me) {
-        }
-
-        public void mouseDragged(MouseEvent me) {
-            System.out.println("drag");
-            update_value(me);
-        }
-
-        public void mouseMoved(MouseEvent me) {
         }
     }
 
@@ -1045,36 +1077,23 @@ public class GraphicFitting extends javax.swing.JFrame {
 
         }
 
+        @Override
         public Object getCellEditorValue() {
             //System.out.println("get value");
             return renderer.value;
         }
 
+        @Override
         public Component getTableCellEditorComponent(JTable jtable, Object o, boolean bln, int i, int i1) {
             //System.out.println("get editor");
             return renderer;
         }
 
     }
-
-    /*private class CustomTable extends JTable {
-
-     private ComplexIconRenderer complex_renderer = new ComplexIconRenderer();
-
-     public CustomTable() {
-     super();
-     }
-
-     public TableCellRenderer getCellRenderer(int row, int column) {
-     if (column == 3) {
-     return complex_renderer;
-     } else {
-     return super.getCellRenderer(row, column);
-     }
-     }
-     }*/
+    
     private class TableListener implements TableModelListener {
 
+        @Override
         public void tableChanged(TableModelEvent tme) {
             TableModel model = (TableModel) tme.getSource();
             model.removeTableModelListener(this); /*Remove temporarily to prevent recursive event*/

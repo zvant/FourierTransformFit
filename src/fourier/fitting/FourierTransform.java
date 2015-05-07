@@ -1,10 +1,6 @@
 package fourier.fitting;
 
-import fourier.fitting.Complex;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  *

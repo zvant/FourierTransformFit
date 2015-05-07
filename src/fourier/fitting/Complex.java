@@ -1,7 +1,6 @@
 package fourier.fitting;
 
 import java.awt.geom.Point2D;
-import java.lang.Math;
 
 /**
  * Complex number class
@@ -13,12 +12,12 @@ public class Complex {
     private final double im; // the imaginary part
 
     /**
-     *
+     * Comparison tolerance
      */
-    public static final double EPS = 1E-5; // values less than epsilon would be treated as zero when printed
+    public static final double EPS = 1E-5;
 
     /**
-     *
+     * Create complex number using real part and imaginary part
      * @param real real part
      * @param imag imaginary part
      */
@@ -28,7 +27,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Create complex number from another complex number
      * @param z
      */
     public Complex(Complex z) {
@@ -37,7 +36,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Return string form of the complex number
      * @return a description string
      */
     @Override
@@ -60,7 +59,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Absolute value of complex number
      * @return absolute value
      */
     public double abs() {
@@ -68,7 +67,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Phase
      * @return Arg(this), between -PI and PI
      */
     public double phase() {
@@ -77,7 +76,7 @@ public class Complex {
 
 
     /**
-     *
+     * Addition
      * @param b complex
      * @return this + b
      */
@@ -86,7 +85,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Addition
      * @param a complex
      * @param b complex
      * @return a + b
@@ -96,7 +95,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Subtraction
      * @param b complex
      * @return this - b
      */
@@ -105,7 +104,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Subtraction
      * @param a complex
      * @param b complex
      * @return a - b
@@ -115,7 +114,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Multiplication
      * @param b complex
      * @return this * b
      */
@@ -127,7 +126,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Multiplication
      * @param a complex
      * @param b complex
      * @return a * b
@@ -137,7 +136,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Multiplication by double
      * @param alpha real
      * @return this * alpha
      */
@@ -146,7 +145,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Multiplication by double
      * @param z complex
      * @param alpha real
      * @return z * alpha
@@ -156,7 +155,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Multiplication by double
      * @param alpha real
      * @param z complex
      * @return z * alpha
@@ -166,7 +165,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Division
      * @param b complex
      * @return this / b
      */
@@ -175,7 +174,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Division
      * @param a complex
      * @param b complex
      * @return a / b
@@ -185,7 +184,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Division by double
      * @param alpha real
      * @return this / alpha
      */
@@ -194,7 +193,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Division by double
      * @param z complex
      * @param alpha real
      * @return z / alpha
@@ -204,7 +203,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Division by double
      * @param alpha real
      * @param z complex
      * @return alpha / z
@@ -214,7 +213,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Conjugate of complex number
      * @return conjugation complex number
      */
         public Complex conjugate() {
@@ -222,7 +221,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Equivalent to Complex.divides(1.0, this)
      * @return complex reciprocal
      */
         public Complex reciprocal() {
@@ -231,7 +230,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Real part
      * @return real part
      */
     public double re() {
@@ -239,7 +238,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Imaginary part
      * @return imaginary part
      */
     public double im() {
@@ -247,7 +246,7 @@ public class Complex {
     }
     
     /**
-     *
+     * Exponential e^z 
      * @return complex exponential
      */
         public Complex exp() {
@@ -255,7 +254,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Exponential e^z
      * @param z
      * @return complex exponential
      */
@@ -264,7 +263,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Complex sine
      * @return complex sine
      */
         public Complex sin() {
@@ -272,7 +271,7 @@ public class Complex {
     }
 
     /**
-     *
+     *Complex sin
      * @param z
      * @return complex sine
      */
@@ -281,7 +280,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Complex cos
      * @return complex cosine
      */
         public Complex cos() {
@@ -289,7 +288,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Complex cos
      * @param z
      * @return complex cosine
      */
@@ -298,7 +297,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Complex tan
      * @return complex tangent
      */
         public Complex tan() {
@@ -306,7 +305,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Complex tan
      * @param z
      * @return complex tangent
      */
@@ -315,7 +314,7 @@ public class Complex {
     }
 
     /**
-     *
+     * Returns the corresponding point on 2D plane
      * @return <i>java.awt.geom.Point2D</i> Point
      */
     public Point2D getPoint() {
@@ -323,10 +322,10 @@ public class Complex {
     }
 
     /**
-     *
+     * Construct a complex number from its absolute value and phase
      * @param r modulus
      * @param phi argument
-     * @return
+     * @return Complex number
      */
     public static Complex fromPolar(double r, double phi) {
         return new Complex(r * Math.cos(phi), r * Math.sin(phi));
