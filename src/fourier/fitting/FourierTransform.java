@@ -1,5 +1,13 @@
 package fourier.fitting;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -29,6 +37,57 @@ public class FourierTransform {
     public void addSample(Complex z) {
         sample_points.add(z);
         N++;
+    }
+    
+    /**
+     * save data, including the samples and coefficients, to a data file
+     * @param path path of the data file
+     * @return true if no exception is thrown
+     */
+    public boolean saveData(String path)
+    {
+    	ArrayList< ArrayList<Complex> > data = new ArrayList< ArrayList<Complex> >();
+    	data.add(sample_points);
+    	data.add(coefficients);
+    	
+    	try
+    	{
+    		ObjectOutputStream out_stream = new ObjectOutputStream(new FileOutputStream(new File(path)));
+    		out_stream.writeObject(data);
+    		out_stream.close();
+    	}
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    		return false;
+    	}
+    	return true;
+    }
+    
+    /**
+     * load data, including the samples and coefficients, from a data file
+     * @param path path of the data file
+     * @return true if no exception is thrown
+     */
+    @SuppressWarnings("unchecked")
+	public boolean loadData(String path)
+    {
+    	ArrayList< ArrayList<Complex> > data = new ArrayList< ArrayList<Complex> >();
+    	
+    	try
+    	{
+    		ObjectInputStream in_stream = new ObjectInputStream(new FileInputStream(new File(path)));
+    		data = (ArrayList< ArrayList<Complex> >)(in_stream.readObject());
+    		in_stream.close();
+    		sample_points = data.get(0);
+    		coefficients = data.get(1);
+		}
+    	catch (Exception e)
+    	{
+			e.printStackTrace();
+			return false;
+		}
+    	return true;
     }
 
     /**
