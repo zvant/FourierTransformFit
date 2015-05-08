@@ -7,10 +7,14 @@ import java.awt.geom.Point2D;
  * @author caoyuan9642
  */
 public class Complex {
-
-    private final double re; // the real part
-    private final double im; // the imaginary part
-
+	/**
+	 * real part
+	 */
+    private final double re;
+    /**
+     * imaginary part
+     */
+    private final double im;
     /**
      * Comparison tolerance
      */

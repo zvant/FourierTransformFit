@@ -12,9 +12,17 @@ import java.util.ArrayList;
  * @author Zekun Zhang
  */
 public class FourierTransform {
-
+	/**
+	 * sample complex numbers
+	 */
     private ArrayList<Complex> sample_points;
+    /**
+     * coefficients of the transformation
+     */
     private ArrayList<Complex> coefficients;
+    /**
+     * number of samples as well as coefficients
+     */
     private int N;
 
     /**
