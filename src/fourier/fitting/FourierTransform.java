@@ -69,26 +69,24 @@ public class FourierTransform {
     @SuppressWarnings("unchecked")
 	public boolean loadData(String path)
     {
-    	ArrayList< ArrayList<Complex> > data = new ArrayList< ArrayList<Complex> >();
-    	
+    	ArrayList< ArrayList<Complex> > data;
     	try
     	{
     		ObjectInputStream in_stream = new ObjectInputStream(new FileInputStream(new File(path)));
     		data = (ArrayList< ArrayList<Complex> >)(in_stream.readObject());
     		in_stream.close();
-    		
-    		sample_points = data.get(0);
-    		coefficients = data.get(1);
-    		if(sample_points.size() == coefficients.size())
-    			N = sample_points.size();
-    		else
+    		if((data == null) || (data.size() != 2) || (data.get(0).size() != data.get(1).size()))
     			return false;
 		}
-    	catch (Exception e)
+    	catch(Exception e)
     	{
 			e.printStackTrace();
 			return false;
 		}
+    	
+    	sample_points = data.get(0);
+		coefficients = data.get(1);
+		N = sample_points.size();
     	return true;
     }
 
