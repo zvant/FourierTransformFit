@@ -57,7 +57,7 @@ public class GraphicFitting extends javax.swing.JFrame {
     private boolean show_curve = true;
     private boolean show_animation = true;
 
-    private ArrayList<Point2D> sample_points = new ArrayList<>(); // points to get fitting
+    private ArrayList<Point2D> sample_points = new ArrayList<Point2D>(); // points to get fitting
 
     private Complex[] coef = new Complex[]{new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)};
 
@@ -359,31 +359,26 @@ public class GraphicFitting extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void checkbox_show_animationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_animationActionPerformed
-        // TODO add your handling code here:
         show_animation = checkbox_show_animation.isSelected();
         canvas.repaint();
     }//GEN-LAST:event_checkbox_show_animationActionPerformed
 
     private void checkbox_show_imageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_imageActionPerformed
-        // TODO add your handling code here:
         show_image = checkbox_show_image.isSelected();
         canvas.repaint();
     }//GEN-LAST:event_checkbox_show_imageActionPerformed
 
     private void checkbox_show_curveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_curveActionPerformed
-        // TODO add your handling code here:
         show_curve = checkbox_show_curve.isSelected();
         canvas.repaint();
     }//GEN-LAST:event_checkbox_show_curveActionPerformed
 
     private void checkbox_show_gridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkbox_show_gridActionPerformed
-        // TODO add your handling code here:
         show_grid = checkbox_show_grid.isSelected();
         canvas.repaint();
     }//GEN-LAST:event_checkbox_show_gridActionPerformed
 
     private void button_loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_loadImageActionPerformed
-        // TODO add your handling code here:
         ((FourierCanvas) canvas).loadImage();
         if (!show_image) {
             checkbox_show_image.doClick();
@@ -392,15 +387,12 @@ public class GraphicFitting extends javax.swing.JFrame {
     }//GEN-LAST:event_button_loadImageActionPerformed
 
     private void button_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_clearActionPerformed
-        // TODO add your handling code here:
         sample_points.clear();
         ordering = false;
         canvas.repaint();
     }//GEN-LAST:event_button_clearActionPerformed
 
     private void button_calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_calculateActionPerformed
-        //TODO ADD CODE Here
-
         FourierTransform DFT = new FourierTransform();
         sample_points.stream().forEach((sample) -> {
             DFT.addSample(new Complex(sample.getX(), -1 * sample.getY()));
@@ -415,27 +407,23 @@ public class GraphicFitting extends javax.swing.JFrame {
     }//GEN-LAST:event_button_calculateActionPerformed
 
     private void button_symmetrize_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_symmetrize_xActionPerformed
-        // TODO add your handling code here:
         symmetrize(Math.PI / 2);
         updateCoef();
         canvas.repaint();
     }//GEN-LAST:event_button_symmetrize_xActionPerformed
 
     private void button_symmetrize_yActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_symmetrize_yActionPerformed
-        // TODO add your handling code here:
         symmetrize(0);
         updateCoef();
         canvas.repaint();
     }//GEN-LAST:event_button_symmetrize_yActionPerformed
 
     private void button_auto_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_auto_orderActionPerformed
-        // TODO add your handling code here:
         reorder();
         canvas.repaint();
     }//GEN-LAST:event_button_auto_orderActionPerformed
 
     private void button_manual_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_manual_orderActionPerformed
-        // TODO add your handling code here:
         if (!ordering) {
             order_index = 0;
             ordering = true;
@@ -1123,6 +1111,5 @@ public class GraphicFitting extends javax.swing.JFrame {
             model.addTableModelListener(this);
             GraphicFitting.this.canvas.repaint();
         }
-
     }
 }
