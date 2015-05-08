@@ -76,8 +76,13 @@ public class FourierTransform {
     		ObjectInputStream in_stream = new ObjectInputStream(new FileInputStream(new File(path)));
     		data = (ArrayList< ArrayList<Complex> >)(in_stream.readObject());
     		in_stream.close();
+    		
     		sample_points = data.get(0);
     		coefficients = data.get(1);
+    		if(sample_points.size() == coefficients.size())
+    			N = sample_points.size();
+    		else
+    			return false;
 		}
     	catch (Exception e)
     	{
